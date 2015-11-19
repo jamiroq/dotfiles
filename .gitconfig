@@ -9,8 +9,8 @@
     interactive = auto
     grep = auto
 [core]
-    excludesfile = ~/.gitignore  # globalな.gitignoreの指定
-    autocrlf = input                 # CRLFを自動変換
+    excludesfile = ~/.gitignore
+    autocrlf = input
     editor = vim
     pager = less
 [alias]
@@ -19,9 +19,9 @@
     co = commit
     ch = checkout
     br = branch
-    wc = whatchanged         # logに変更されたファイルも一緒に出す
-    ls = log --stat          # logに変更されたファイルも一緒に出す
-    lp = log -p              # diffも一緒に出す
+    wc = whatchanged
+    ls = log --stat
+    lp = log --patch-with-stat
     ll = log --graph --all --decorate --abbrev-commit --branches --date=short --pretty=format:\"%C(red)%h%C(reset) %C(green)[%ad]%C(reset) %s %C(cyan)@%an%C(reset) %C(yellow)%d%C(reset)\"
     di = diff
     dc = diff --cached
