@@ -1,6 +1,6 @@
 ROOTPATH := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
 TARGET   := $(wildcard .??*)
-EXCLUDES := .DS_Store .git
+EXCLUDES := .DS_Store .git .gitignore
 DOTFILES := $(filter-out $(EXCLUDES), $(TARGET))
 
 .PHONY: deploy list init update
