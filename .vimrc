@@ -112,6 +112,7 @@ set textwidth=0                 " Not wrapped automatically
 set formatoptions=lmoq          " Text formatting option add multi-byte
 set helplang=ja,en              " Help language
 set foldmethod=marker
+set modelines=5                 " Number of lines to find a vim setting
 set matchpairs& matchpairs+=<:> " Add '<' and '>' to the corresponding brackets
 set viewoptions=folds,cursor    " Change the effect of mkview command
 autocmd BufWritePost * mkview
