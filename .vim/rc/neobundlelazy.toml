@@ -1,0 +1,94 @@
+[[plugins]]
+repository = 'cespare/vim-toml'
+filetypes = 'toml'
+
+[[plugins]]
+repository = 'plasticboy/vim-markdown'
+filetypes = 'markdown'
+
+[[plugins]]
+repository = 'vim-jp/vimdoc-ja'
+filetypes = 'help'
+
+[[plugins]]
+repository = 'Shougo/neocomplete.vim'
+insert = 1
+
+[[plugins]]
+repository = 'Shougo/neocomplcache.vim'
+insert = 1
+
+[[plugins]]
+repository = 'Shougo/vimfiler'
+depends = 'Shougo/unite.vim'
+commands = [ 'VimFilerTab', 'VimFiler', 'VimFilerExplorer' ]
+mappings = '<Plug>(vimfiler_switch)'
+explorer = 1
+
+[[plugins]]
+repository = 'thinca/vim-quickrun'
+mappings = '<Plug>(quickrun)'
+
+[[plugins]]
+repository = 'vim-scripts/Align'
+commands = 'Align'
+
+[[plugins]]
+repository = 'vim-scripts/buftabs.git'
+filetypes = 'all'
+
+[[plugins]]
+repository = 'fuenor/qfixhowm.git'
+mapping = '<Plug>'
+
+[[plugins]]
+repository = 'thinca/vim-template'
+insert = 1
+
+[[plugins]]
+repository = 'sjl/gundo.vim'
+commands = 'GundoToggle'
+
+[[plugins]]
+repository = 'tpope/vim-surround'
+insert = 1
+
+[[plugins]]
+repository = 'mattn/zencoding-vim'
+filetypes = 'html'
+
+[[plugins]]
+repository = 'Shougo/vimshell.vim'
+depends = 'Shougo/vimproc.vim'
+commands = 'VimShell'
+
+[[plugins]]
+repository = 'Shougo/unite.vim'
+
+    [plugin.commands]
+    name = 'Unite'
+    complete = 'customlist,unite#complete_source'
+
+[[plugins]]
+repository = 'h1mesuke/unite-outline'
+unite_sources = 'outline'
+
+[[plugins]]
+repository = 'Shougo/neomru.vim'
+filetypes = 'all'
+
+
+#[[plugins]]
+#repository = 'vim-scripts/YankRing.vim'
+#commands = 'YRShow'
+
+#[[plugins]]
+#repository = 'Shougo/neosnippet.vim'
+#depends = 'honza/vim-snippets'
+#insert = 1
+
+#[[plugins]]
+#repository = 'davidhalter/jedi-vim'
+#filetypes = ['python', 'python3', 'djangohtml']
+#build = 'pip install jedi'
+

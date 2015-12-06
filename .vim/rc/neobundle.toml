@@ -1,0 +1,6 @@
+[[plugins]]
+repository = 'Shougo/vimproc.vim'
+build = 'make'
+
+[[plugins]]
+repository = 'w0ng/vim-hybrid'

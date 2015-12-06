@@ -1,0 +1,33 @@
+[user]
+    name = jamiroq
+    email = jamiroq24@gmail.com
+[color]
+    ui = auto
+    status = auto
+    diff = auto
+    branch = auto
+    interactive = auto
+    grep = auto
+[core]
+    excludesfile = ~/.gitignore
+    autocrlf = input
+    editor = vim
+    pager = less
+[alias]
+    st = status
+    ad = add
+    co = commit
+    ch = checkout
+    br = branch
+    wc = whatchanged
+    ls = log --stat
+    lp = log --patch-with-stat
+    ll = log --graph --all --decorate --abbrev-commit --branches --date=short --pretty=format:\"%C(red)%h%C(reset) %C(green)[%ad]%C(reset) %s %C(cyan)@%an%C(reset) %C(yellow)%d%C(reset)\"
+    di = diff
+    dc = diff --cached
+    sh = show
+    s1 = show HEAD~1
+    s2 = show HEAD~2
+    s3 = show HEAD~3
+    s4 = show HEAD~4
+    s5 = show HEAD~5
