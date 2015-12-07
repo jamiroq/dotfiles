@@ -10,18 +10,18 @@ has() {
 }
 
 paint() {
-    local end="\033[m"       ## 属性を標準に戻す
-    local bold="\033[1m"     ## 強調（太字）
-    local under="\033[4m"    ## 下線
-    local reverse="\033[7m"  ## 反転
-    local black="\033[30m"   ## 黒の文字に変更
-    local red="\033[31m"     ## 赤の文字に変更
-    local green="\033[32m"   ## 緑の文字に変更
-    local yellow="\033[33m"  ## 黄色の文字に変更
-    local blue="\033[34m"    ## 青の文字に変更
-    local magenta="\033[35m" ## マゼンダの文字に変更
-    local cyan="\033[36m"    ## シアンの文字に変更
-    local white="\033[37m"   ## 白の文字に変更
+    local end="\033[m"
+    local bold="\033[1m"
+    local under="\033[4m"
+    local reverse="\033[7m"
+    local black="\033[30m"
+    local red="\033[31m"
+    local green="\033[32m"
+    local yellow="\033[33m"
+    local blue="\033[34m"
+    local magenta="\033[35m"
+    local cyan="\033[36m"
+    local white="\033[37m"
     local none=""
 
     local text="${1:?}"
