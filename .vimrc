@@ -114,9 +114,6 @@ set helplang=ja,en              " Help language
 set foldmethod=marker
 set modelines=5                 " Number of lines to find a vim setting
 set matchpairs& matchpairs+=<:> " Add '<' and '>' to the corresponding brackets
-set viewoptions=folds,cursor    " Change the effect of mkview command
-autocmd BufWritePost * mkview
-autocmd BufReadPost  * loadview
 "--------------------------------------------------------------------
 " Basics_end }}}
 "====================================================================
@@ -254,7 +251,9 @@ cmap w!! w !sudo tee > /dev/null %
 " Encoding: {{{
 "--------------------------------------------------------------------
 " default encoding
-set encoding=utf-8
+if has('vim_starting')
+    set encoding=utf-8
+endif
 " Line feed code
 set fileformats=unix,dos,mac
 " Encoding automatic identification
@@ -360,8 +359,10 @@ set nobackup      " Not Buckup
 set noswapfile    " Not create swap file
 set nowritebackup " Disable Backup
 set history=10000 " History number for command and search pattern
-"" read/write a .viminfo file, don't store more than
 set viminfo='50,<1000,s100,\"50,!
+set viewoptions=folds,cursor    " Change the effect of mkview command
+autocmd BufWritePost * if expand('%') != '' && &buftype !~ 'nofile' | mkview | endif
+autocmd BufRead * if expand('%') != '' && &buftype !~ 'nofile' | silent loadview | endif
 "--------------------------------------------------------------------
 " Backup_end }}}
 "====================================================================
