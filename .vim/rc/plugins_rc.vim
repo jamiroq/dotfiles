@@ -2,7 +2,16 @@
 " neocomplete
 "----------------------
 if neobundle#tap('neocomplete.vim') && has('lua')
-    let g:neocomplet#enable_smart_case = 1
+    let g:neocomplete#enable_at_startup = 1
+    let g:neocomplete#enable_ignore_case = 1
+    let g:neocomplete#enable_smart_case = 1
+    let g:neocomplete#enable_auto_select = 1
+    let g:neocomplete#enable_enable_camel_case_completion = 0
+    if !exists('g:neocomplete#keyword_patterns')
+        let g:neocomplete#keyword_patterns = {}
+    endif
+    let g:neocomplete#keyword_patterns._ = '\h\w*'
+    inoremap <expr><C-i>  pumvisible() ? "\<C-n>" : "\<TAB>"
     call neobundle#untap()
 endif
 
@@ -10,9 +19,17 @@ endif
 " neocomplcache
 "----------------------
 if neobundle#tap('neocomplcache.vim')
-    let g:acp_enableAtStartup = 0
-    let g:neocomplcache_enable_smart_case = 1
+    "let g:acp_enableAtStartup = 0
     let g:neocomplcache_enable_at_startup = 1
+    let g:neocomplcache_enable_ignore_case = 1
+    let g:neocomplcache_enable_smart_case = 1
+    let g:neocomplcache_enable_auto_select = 1
+    let g:neocomplcache_enable_enable_camel_case_completion = 0
+    if !exists('g:neocomplcache_keyword_patterns')
+        let g:neocomplcache_keyword_patterns = {}
+    endif
+    let g:neocomplcache_keyword_patterns._ = '\h\w*'
+    inoremap <expr><C-i>  pumvisible() ? "\<C-n>" : "\<TAB>"
     call neobundle#untap()
 endif
 
@@ -100,7 +117,8 @@ endif
 if neobundle#tap('vim-quickrun')
     nmap <silent> <Leader>r <Plug>(quickrun)
     let g:quickrun_config = {
-        \ "*": {"runner": "vimproc"},
+        \ 'go': {'command': 'go run'},
+        \ '*': {'runner': 'vimproc'},
         \ }
     call neobundle#untap()
 endif
@@ -142,6 +160,26 @@ endif
 "----------------------
 if neobundle#tap('vimshell.vim')
     nnoremap <silent> <leader>s :<C-u>VimShell<CR>
+    call neobundle#untap()
+endif
+
+"----------------------
+" vim-go
+"----------------------
+if neobundle#tap('vim-go')
+    let g:go_highlight_functions = 1
+    let g:go_highlight_methods = 1
+    let g:go_highlight_structs = 1
+    call neobundle#untap()
+endif
+
+"----------------------
+" tagbar
+"----------------------
+if neobundle#tap('tagbar')
+    nnoremap <Leader>t :TagbarToggle<CR>
+    let g:tagbar_left = 0
+    let g:tagbar_autofocus = 1
     call neobundle#untap()
 endif
 

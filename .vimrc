@@ -113,6 +113,7 @@ set formatoptions=lmoq          " Text formatting option add multi-byte
 set helplang=ja,en              " Help language
 set foldmethod=marker
 set modelines=5                 " Number of lines to find a vim setting
+set tags=./tags;
 set matchpairs& matchpairs+=<:> " Add '<' and '>' to the corresponding brackets
 "--------------------------------------------------------------------
 " Basics_end }}}
@@ -141,6 +142,7 @@ autocmd MyAutoCmd BufNewFile,BufRead *.md      setf markdown
 autocmd MyAutoCmd BufNewFile,BufRead *.jquery  setf jquery
 autocmd MyAutoCmd BufNewFile,BufRead *.css     setf css3
 autocmd MyAutoCmd BufNewFile,BufRead *.txt     setf hybrid
+autocmd MyAutoCmd BufNewFile,BufRead *.go      setf go
 "--------------------------------------------------------------------
 " Apperance_end }}}
 "====================================================================
@@ -226,9 +228,14 @@ cnoremap <C-d> <Del>
 cnoremap <C-b> <Left>
 cnoremap <C-f> <Right>
 " Buffer manipulate
-nnoremap <silent><C-j> :<C-u>bp<CR>
-nnoremap <silent><C-k> :<C-u>bn<CR>
+nnoremap <silent><C-p> :<C-u>bp<CR>
+nnoremap <silent><C-n> :<C-u>bn<CR>
 nnoremap <leader>d :<C-u>bd<CR>
+" Window manipulate
+nnoremap <silent><C-h> <C-w>h
+nnoremap <silent><C-j> <C-w>j
+nnoremap <silent><C-k> <C-w>k
+nnoremap <silent><C-l> <C-w>l
 " ESC assign
 inoremap <C-@> <ESC>
 inoremap jj <Esc>

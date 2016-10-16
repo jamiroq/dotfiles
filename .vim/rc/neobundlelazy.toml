@@ -50,6 +50,10 @@ repository = 'sjl/gundo.vim'
 commands = 'GundoToggle'
 
 [[plugins]]
+repository = 'majutsushi/tagbar'
+commands = 'TagbarToggle'
+
+[[plugins]]
 repository = 'tpope/vim-surround'
 insert = 1
 
@@ -77,6 +81,9 @@ unite_sources = 'outline'
 repository = 'Shougo/neomru.vim'
 filetypes = 'all'
 
+[[plugins]]
+repository = 'fatih/vim-go'
+filetypes = 'go'
 
 #[[plugins]]
 #repository = 'vim-scripts/YankRing.vim'

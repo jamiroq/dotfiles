@@ -30,3 +30,6 @@ export HISTFILE=$HOME/.zsh_history #履歴の保存先
 export HISTSIZE=100000 #メモリに展開する履歴の数
 export SAVEHIST=100000 #保存する履歴の数
 
+## Golang
+export GOPATH=$HOME/.go
+export PATH=$PATH:$GOPATH/bin
