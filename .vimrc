@@ -1,5 +1,5 @@
 "====================================================================
-" for Vim version : 7.3, 7.4 (recommend +lua, and git)
+" for Vim version : 8.0
 "====================================================================
 
 "====================================================================
@@ -86,8 +86,29 @@ endif
 "--------------------------------------------------------------------
 " View the status line always
 set laststatus=2
+
 " Statusline format
-set statusline=%=(%<%F\ )%r%h%w%y%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']'}[%l/%L](%P)"%m
+set statusline=
+set statusline+=%{b:gitbranch}
+set statusline+=%m
+set statusline+=%=(%<%F\ )%r%h%w%y%{'['.(&fenc!=''?&fenc:&enc).']'}[%l/%L](%P)"
+function! StatuslineGitBranch()
+    let b:gitbranch=""
+    if &modifiable
+        lcd %:p:h
+        let l:gitrevparse=system("git rev-parse --abbrev-ref HEAD")
+        lcd -
+        if l:gitrevparse!~"fatal: not a git repository"
+            let b:gitbranch="(".substitute(l:gitrevparse, '\n', '', 'g').") "
+        endif
+    endif
+endfunction
+
+augroup GetGitBranch
+    autocmd!
+    autocmd VimEnter,WinEnter,BufEnter * call StatuslineGitBranch()
+augroup END
+
 " Status line color change on insert mode
 augroup InsertHook
     autocmd!
@@ -101,20 +122,37 @@ augroup END
 "====================================================================
 " Basics: {{{
 "--------------------------------------------------------------------
-set vb t_vb=                    " To mute the beep
-set autoread                    " If the file is rewritten, read automatically
-set hidden                      " Hide without closing the buffer
-set switchbuf=useopen           " If already open a buffer, jump to the window
-set scrolloff=5                 " Secure margin when scrolling
-set backspace=indent,eol,start  " Backspace erase everything
-set whichwrap=b,s,h,l,<,>,[,]   " Not stop at the beginning and end of a line
-set textwidth=0                 " Not wrapped automatically
-set formatoptions=lmoq          " Text formatting option add multi-byte
-set helplang=ja,en              " Help language
+" To mute the beep
+set vb t_vb=
+" Speed up terminal drawing
+set ttyfast
+" If the file is rewritten, read automatically
+set autoread
+" Hide without closing the buffer
+set hidden
+" If already open a buffer, jump to the window
+set switchbuf=useopen
+" Secure margin when scrolling
+set scrolloff=5
+" Backspace erase everything
+set backspace=indent,eol,start
+" Not stop at the beginning and end of a line
+set whichwrap=b,s,h,l,<,>,[,]
+" Not wrapped automatically
+set textwidth=0
+" Text formatting option add multi-byte
+set formatoptions=lmoq
+" Help language
+set helplang=ja,en
+" Fold with marker
 set foldmethod=marker
-set modelines=5                 " Number of lines to find a vim setting
+" Number of lines to find a vim setting
+set modelines=5
 set tags=./tags;
-set matchpairs& matchpairs+=<:> " Add '<' and '>' to the corresponding brackets
+" Add '<' and '>' to the corresponding brackets
+set matchpairs& matchpairs+=<:>
+" Only rectangular visual mode can move anywhere
+set virtualedit=block
 "--------------------------------------------------------------------
 " Basics_end }}}
 "====================================================================
@@ -124,25 +162,45 @@ set matchpairs& matchpairs+=<:> " Add '<' and '>' to the corresponding brackets
 "--------------------------------------------------------------------
 syntax enable
 colorscheme hybrid
+" background color
 set background=dark
-set ruler       " Show cursor position
-set number      " Display line number
-set showcmd     " Display command in the status line
-set lazyredraw  " redrawn while executing macros, registers and other command
-set showmatch   " highlight the matching parentheses
-set linespace=0 " Number of pixel lines inserted between characters
-set list        " Display unprintable characters
-set display=uhex " Show unprintable charcters hexadecimal
-set colorcolumn=80
+" Show cursor position
+set ruler
+" Display line number
+set number
+" Display command in the status line
+set showcmd
+" redrawn while executing macros, registers and other command
+set lazyredraw
+" highlight the matching parentheses
+set showmatch
+" Number of pixel lines inserted between characters
+set linespace=0
+" Show unprintable charcters hexadecimal
+set display=uhex
+" Open window below
+set splitbelow
 " Useing string in list mode
-set listchars=tab:»-,trail:-,extends:»,precedes:«,eol:¬
-" Filetype syntax
+set colorcolumn=80
+" Display unprintable characters
+set list
+set listchars=tab:»-,trail:-,extends:»,precedes:«,eol:¬ " Filetype syntax
 autocmd MyAutoCmd BufNewFile,BufRead *.json    setf json
 autocmd MyAutoCmd BufNewFile,BufRead *.md      setf markdown
 autocmd MyAutoCmd BufNewFile,BufRead *.jquery  setf jquery
 autocmd MyAutoCmd BufNewFile,BufRead *.css     setf css3
 autocmd MyAutoCmd BufNewFile,BufRead *.txt     setf hybrid
 autocmd MyAutoCmd BufNewFile,BufRead *.go      setf go
+autocmd MyAutoCmd BufNewFile,BufRead *.pug     setf pug
+function! EnableJavascript()
+    " Setup for javascript-libraries-syntax
+    let g:used_javascript_libs = 'jquery,underscore,react,flux'
+    let b:javascript_lib_use_jquery = 1
+    let b:javascript_lib_use_underscore = 1
+    let b:javascript_lib_use_react = 1
+    let b:javascript_lib_use_flux = 1
+endfunction
+autocmd MyAutoCmd Filetype javascript,javascript.jsx call EnableJavascript()
 "--------------------------------------------------------------------
 " Apperance_end }}}
 "====================================================================
@@ -150,10 +208,14 @@ autocmd MyAutoCmd BufNewFile,BufRead *.go      setf go
 "====================================================================
 " Indent: {{{
 "--------------------------------------------------------------------
-set autoindent  " Copy indent from current line when starting a new line
-set smartindent " Do smart autoindenting when starting a new line
-set cindent     " Indent for C lang
-set expandtab   " Replace the tabs to spaces
+" Copy indent from current line when starting a new line
+set autoindent
+" Do smart autoindenting when starting a new line
+set smartindent
+" Indent for C lang
+set cindent
+" Replace the tabs to spaces
+set expandtab
 set shiftround
 " Setting the tab width
 set tabstop=4 shiftwidth=4 softtabstop=0
@@ -164,10 +226,14 @@ set tabstop=4 shiftwidth=4 softtabstop=0
 "====================================================================
 " Complete: {{{
 "--------------------------------------------------------------------
-set wildchar=<tab>     " Key for execute Complete
-set wildmenu           " Expand complete for comand line
-set wildmode=list:full " Display all match pattern, and complete first match
-set complete+=k        " Adding the dictionary file
+" Key for execute Complete
+set wildchar=<tab>
+" Expand complete for comand line
+set wildmenu
+" Display all match pattern, and complete first match
+set wildmode=list:full
+" Adding the dictionary file
+set complete+=k
 "--------------------------------------------------------------------
 " Complete_end }}}
 "====================================================================
@@ -175,13 +241,18 @@ set complete+=k        " Adding the dictionary file
 "====================================================================
 " Search: {{{
 "--------------------------------------------------------------------
-set wrapscan   " Search warp around the end of file
-set ignorecase " Ignore Uppercase and lowercase
-set smartcase  " If Start Uppercase, Case-sensitive
-set incsearch  " Enable incremental search
-set hlsearch   " Highlight the search charcters
+" Search warp around the end of file
+set wrapscan
+" Ignore Uppercase and lowercase
+set ignorecase
+" If Start Uppercase, Case-sensitive
+set smartcase
+" Enable incremental search
+set incsearch
+" Highlight the search charcters
+set hlsearch
 " Tern off the highlight search
-nnoremap <silent> s  :<C-u>nohlsearch<CR>
+nnoremap <silent><ESC>  :<C-u>nohlsearch<CR>
 " Search the selected charcters
 vnoremap <silent> // y/<C-R>=escape(@", '\\/.*$^~[]')<CR><CR>
 " Replace the selected charcters
@@ -257,67 +328,21 @@ cmap w!! w !sudo tee > /dev/null %
 "====================================================================
 " Encoding: {{{
 "--------------------------------------------------------------------
-" default encoding
-if has('vim_starting')
-    set encoding=utf-8
-endif
-" Line feed code
+set encoding=utf-8
+set fileencodings=ucs-bom,utf-8,iso-2022-jp,sjis,cp932,euc-jp,cp20932
 set fileformats=unix,dos,mac
-" Encoding automatic identification
-if &encoding !=# 'utf-8'
-  set encoding=japan
-  set fileencoding=japan
-endif
-if has('iconv')
-  let s:enc_euc = 'euc-jp'
-  let s:enc_jis = 'iso-2022-jp'
-  "Check eucJP-ms encoding by iconv
-  if iconv("\x87\x64\x87\x6a", 'cp932', 'eucjp-ms') ==# "\xad\xc5\xad\xcb"
-    let s:enc_euc = 'eucjp-ms'
-    let s:enc_jis = 'iso-2022-jp-3'
-    "Check JISX0213 encoding by iconv
-  elseif iconv("\x87\x64\x87\x6a", 'cp932','euc-jisx0213') ==# "\xad\xc5\xad\xcb"
-    let s:enc_euc = 'euc-jisx0213'
-    let s:enc_jis = 'iso-2022-jp-3'
-  endif
-  " Setting fileencodings
-  if &encoding ==# 'utf-8'
-    let s:fileencodings_default = &fileencodings
-    let &fileencodings = s:enc_jis .','. s:enc_euc .',cp932'
-    let &fileencodings = &fileencodings .','. s:fileencodings_default
-    unlet s:fileencodings_default
-  else
-    let &fileencodings = &fileencodings .','. s:enc_jis
-    set fileencodings+=utf-8,ucs-2le,ucs-2
-    if &encoding =~# '^\(euc-jp\|euc-jisx0213\|eucjp-ms\)$'
-      set fileencodings+=cp932
-      set fileencodings-=euc-jp
-      set fileencodings-=euc-jisx0213
-      set fileencodings-=eucjp-ms
-      let &encoding = s:enc_euc
-      let &fileencoding = s:enc_euc
-    else
-      let &fileencodings = &fileencodings .','. s:enc_euc
-    endif
-  endif
-  unlet s:enc_euc
-  unlet s:enc_jis
-endif
-" If not japanses, use encoding instead of fileencoding
-if has('autocmd')
-  function! AU_ReCheck_FENC()
-    if &fileencoding =~# 'iso-2022-jp' && search("[^\x01-\x7e]", 'n') == 0
-      let &fileencoding=&encoding
-    endif
-  endfunction
-  autocmd BufReadPost * call AU_ReCheck_FENC()
-endif
-" cursor support Multi byte characters
-if exists('&ambiwidth')
-  set ambiwidth=double
-endif
 "--------------------------------------------------------------------
 " Encoding_end }}}
+"====================================================================
+
+"====================================================================
+" Terminal: {{{
+"--------------------------------------------------------------------
+set termkey=<C-q>
+noremap <silent><leader>t :terminal<CR>
+tnoremap <Esc> <C-\><C-n>
+"--------------------------------------------------------------------
+" Terminal_end }}}
 "====================================================================
 
 "====================================================================
@@ -337,24 +362,6 @@ augroup BufferAuto
     " When save, remove trailing spaces
     autocmd BufWritePre * :%s/\s\+$//ge
 augroup END
-" Window auto command
-augroup QfxAuto
-    autocmd!
-    " If use make or grep command, open Quickfix
-    autocmd QuickfixCmdPost make,grep,grepadd,vimgrep copen
-    " Close to QuickFix, Help
-    autocmd FileType help,qf nnoremap <buffer> <ESC> <C-w>c
-augroup END
-" Binary mode for xxd
-augroup BinaryXXD
-    autocmd!
-    autocmd BufReadPre *.bin let &binary =1
-    autocmd BufReadPost * if &binary | silent %!xxd
-    autocmd BufReadPost * set ft=xxd | endif
-    autocmd BufWritePre * if &binary | %!xxd -r | endif
-    autocmd BufWritePost * if &binary | silent %!xxd
-    autocmd BufWritePost * set nomod | endif
-augroup END
 "--------------------------------------------------------------------
 " Utility_end }}}
 "====================================================================
@@ -362,12 +369,18 @@ augroup END
 "====================================================================
 " Backup: {{{
 "--------------------------------------------------------------------
-set nobackup      " Not Buckup
-set noswapfile    " Not create swap file
-set nowritebackup " Disable Backup
-set history=10000 " History number for command and search pattern
+" Not Buckup
+set nobackup
+" Not create swap file
+set noswapfile
+" Disable Backup
+set nowritebackup
+" History number for command and search pattern
+set history=10000
 set viminfo='50,<1000,s100,\"50,!
-set viewoptions=folds,cursor    " Change the effect of mkview command
+" Change the effect of mkview command
+set viewoptions=folds,cursor
+" Save fold settings
 autocmd BufWritePost * if expand('%') != '' && &buftype !~ 'nofile' | mkview | endif
 autocmd BufRead * if expand('%') != '' && &buftype !~ 'nofile' | silent loadview | endif
 "--------------------------------------------------------------------

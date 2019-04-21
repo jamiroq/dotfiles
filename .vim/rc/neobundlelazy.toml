@@ -1,21 +1,9 @@
 [[plugins]]
-repository = 'cespare/vim-toml'
-filetypes = 'toml'
-
-[[plugins]]
-repository = 'plasticboy/vim-markdown'
-filetypes = 'markdown'
-
-[[plugins]]
-repository = 'vim-jp/vimdoc-ja'
-filetypes = 'help'
-
-[[plugins]]
-repository = 'Shougo/neocomplete.vim'
+repository = 'kana/vim-smartinput'
 insert = 1
 
 [[plugins]]
-repository = 'Shougo/neocomplcache.vim'
+repository = 'Shougo/neocomplete.vim'
 insert = 1
 
 [[plugins]]
@@ -38,33 +26,12 @@ repository = 'vim-scripts/buftabs.git'
 filetypes = 'all'
 
 [[plugins]]
-repository = 'fuenor/qfixhowm.git'
-mapping = '<Plug>'
-
-[[plugins]]
 repository = 'thinca/vim-template'
 insert = 1
 
 [[plugins]]
-repository = 'sjl/gundo.vim'
-commands = 'GundoToggle'
-
-[[plugins]]
 repository = 'majutsushi/tagbar'
 commands = 'TagbarToggle'
-
-[[plugins]]
-repository = 'tpope/vim-surround'
-insert = 1
-
-[[plugins]]
-repository = 'mattn/zencoding-vim'
-filetypes = 'html'
-
-[[plugins]]
-repository = 'Shougo/vimshell.vim'
-depends = 'Shougo/vimproc.vim'
-commands = 'VimShell'
 
 [[plugins]]
 repository = 'Shougo/unite.vim'
@@ -82,8 +49,44 @@ repository = 'Shougo/neomru.vim'
 filetypes = 'all'
 
 [[plugins]]
+repository = 'tpope/vim-surround'
+insert = 1
+
+[[plugins]]
+repository = 'mattn/zencoding-vim'
+filetypes = 'html'
+
+[[plugins]]
+repository = 'vim-jp/vimdoc-ja'
+filetypes = 'help'
+
+[[plugins]]
+repository = 'cespare/vim-toml'
+filetypes = 'toml'
+
+[[plugins]]
+repository = 'plasticboy/vim-markdown'
+filetypes = 'markdown'
+
+[[plugins]]
 repository = 'fatih/vim-go'
 filetypes = 'go'
+
+[[plugins]]
+repository = 'othree/yajs.vim'
+filetypes = 'javascript'
+
+[[plugins]]
+repository = 'othree/es.next.syntax.vim'
+filetypes = 'javascript'
+
+[[plugins]]
+repository = 'othree/javascript-libraries-syntax.vim'
+filetypes = 'javascript'
+
+[[plugins]]
+repository = 'digitaltoad/vim-pug'
+filetypes = 'pug'
 
 #[[plugins]]
 #repository = 'vim-scripts/YankRing.vim'

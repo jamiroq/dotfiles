@@ -16,24 +16,6 @@ if neobundle#tap('neocomplete.vim') && has('lua')
 endif
 
 "----------------------
-" neocomplcache
-"----------------------
-if neobundle#tap('neocomplcache.vim')
-    "let g:acp_enableAtStartup = 0
-    let g:neocomplcache_enable_at_startup = 1
-    let g:neocomplcache_enable_ignore_case = 1
-    let g:neocomplcache_enable_smart_case = 1
-    let g:neocomplcache_enable_auto_select = 1
-    let g:neocomplcache_enable_enable_camel_case_completion = 0
-    if !exists('g:neocomplcache_keyword_patterns')
-        let g:neocomplcache_keyword_patterns = {}
-    endif
-    let g:neocomplcache_keyword_patterns._ = '\h\w*'
-    inoremap <expr><C-i>  pumvisible() ? "\<C-n>" : "\<TAB>"
-    call neobundle#untap()
-endif
-
-"----------------------
 " Unite.vim
 "----------------------
 if neobundle#tap('unite.vim')
@@ -124,18 +106,6 @@ if neobundle#tap('vim-quickrun')
 endif
 
 "----------------------
-" qFixhowm
-"----------------------
-if neobundle#tap('qfixhowm')
-    let howm_dir = '~/Dropbox/howm'
-    let QFixHowm_RootDir = '~/Dropbox/howm'
-    let QFixMRU_Filename = '~/.qfixmru'
-    let QFixHowm_FileType = 'markdown'
-    let QFixMRU_EntryMax = 300
-    call neobundle#untap()
-endif
-
-"----------------------
 " buftabs.vim
 "----------------------
 if neobundle#tap('buftabs')
@@ -152,14 +122,6 @@ endif
 if neobundle#tap('Align')
     " Alignを日本語環境で使用するための設定
     let g:Align_xstrlen = 3
-    call neobundle#untap()
-endif
-
-"----------------------
-" VimShell
-"----------------------
-if neobundle#tap('vimshell.vim')
-    nnoremap <silent> <leader>s :<C-u>VimShell<CR>
     call neobundle#untap()
 endif
 
