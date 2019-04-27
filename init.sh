@@ -1,9 +1,9 @@
 #!/bin/bash
 set -eu
 
-############################################
-# bootstrap.sh
-############################################
+#===========================================
+# Bootstrap {{{
+#-------------------------------------------
 has() {
     type ${1:?} >/dev/null 2>&1
     return $?
@@ -56,17 +56,49 @@ fail() {
     paint "$*\n" "red" "bold" 1>&2
 }
 
+# lower returns the string with all letters mapped to their lower case.
+lower() {
+    if [ $# -eq 0 ]; then
+        cat <&0
+    elif [ $# -eq 1 ]; then
+        if [ -f "$1" -a -r "$1" ]; then
+            cat "$1"
+        else
+            echo "$1"
+        fi
+    else
+        return 1
+    fi | tr "[:upper:]" "[:lower:]"
+}
 
-############################################
-# INIT
-############################################
+# upper returns the string with all letters mapped to their upper case.
+upper() {
+    if [ $# -eq 0 ]; then
+        cat <&0
+    elif [ $# -eq 1 ]; then
+        if [ -f "$1" -a -r "$1" ]; then
+            cat "$1"
+        else
+            echo "$1"
+        fi
+    else
+        return 1
+    fi | tr "[:lower:]" "[:upper:]"
+}
+
+#===========================================
+# Bootstrap_END }}}
+#-------------------------------------------
+
+#===========================================
+# Initalize {{{
+#-------------------------------------------
 catch() {
     fail "terminating..."
     if [ -d "$DOTPATH" ]; then
         rm -f "$DOTPATH"
         exit 1
     fi
-
 }
 
 dotfiles_download() {
@@ -119,9 +151,13 @@ dotfiles_install() {
     dotfiles_deploy
 }
 
-############################################
-# MAIN
-############################################
+#-------------------------------------------
+# Initialize_END }}}
+#===========================================
+
+#===========================================
+# Main {{{
+#-------------------------------------------
 # Set DOTPATH as default variable
 if [ -z "${DOTPATH:-}" ]; then
     DOTPATH=~/.dotfiles
@@ -150,4 +186,8 @@ if [ -n "${BASH_EXECUTION_STRING:-}" ] || [ -p /dev/stdin ]; then
         exec "${SHELL:-/bin/zsh}"
     fi
 fi
+
+#-------------------------------------------
+# Main_END }}}
+#===========================================
 
