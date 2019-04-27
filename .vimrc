@@ -17,6 +17,7 @@ augroup END
 
 " Map leader
 let mapleader = ' '
+
 "--------------------------------------------------------------------
 " Initialization_END }}}
 "====================================================================
@@ -25,57 +26,155 @@ let mapleader = ' '
 " Plugins: {{{
 "--------------------------------------------------------------------
 
-"----------------------
-" neobundle.vim
-"----------------------
-let s:bundle_root = expand('~/.vim/bundle')
-let s:neobundle_root = s:bundle_root . '/neobundle.vim'
-
-if !isdirectory(s:neobundle_root)
-    echomsg "Please install NeoBundle using the InitNeoBundle Command"
-    command! InitNeoBundle call s:install_neobundle()
-
-    function! s:install_neobundle()
-        redraw | echo 'Installing neobundle.vim...'
-        if !isdirectory(s:bundle_root)
-            call mkdir(s:bundle_root, 'p')
-        endif
-        execute 'cd' s:bundle_root
-
-        if executable('git')
-            call system('git clone git://github.com/Shougo/neobundle.vim')
-            if v:shell_error
-                echoerr 'Can not install NeoBundle: Git error.'
-                return
-            endif
-        endif
-
-        echo printf("Reloading '%s'", $MYVIMRC)
-        execute 'set runtimepath+=' . s:neobundle_root
-        source $MYVIMRC
-        echomsg 'Installed NeoBundle and Plugins'
-    endfunction
-else
-    if has('vim_starting')
-        execute 'set runtimepath+=' . s:neobundle_root
-    endif
-
-    call neobundle#begin(s:bundle_root)
-
-    " Taking case of neobundle by ifself
-    NeoBundleFetch 'Shougo/neobundle.vim'
-
-    call neobundle#load_toml('~/.vim/rc/neobundle.toml')
-    call neobundle#load_toml('~/.vim/rc/neobundlelazy.toml', {'lazy' : 1})
-    execute 'source' fnameescape(expand('~/.vim/rc/plugins_rc.vim'))
-
-    cal neobundle#end()
-
-    filetype plugin indent on
-    if !has('vim_starting')
-        NeoBundleCheck
-    endif
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
+
+call plug#begin()
+
+"============================================
+" Filter:
+"============================================
+
+"----------------------
+" fzf
+"----------------------
+Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --all'}
+Plug 'junegunn/fzf.vim'
+command! FZFMru call fzf#run({
+            \  'source':  v:oldfiles,
+            \  'sink':    'e',
+            \  'options': '-m -x +s',
+            \  'down':    '40%'})
+nnoremap <Leader>m :FZFMru<CR>
+nnoremap <Leader>b :Buffers<CR>
+nnoremap <Leader>f :Files<CR>
+
+"============================================
+" Input_support:
+"============================================
+
+"----------------------
+" deoplete
+"----------------------
+Plug 'Shougo/deoplete.nvim', { 'on': [] }
+Plug 'roxma/nvim-yarp'
+Plug 'roxma/vim-hug-neovim-rpc'
+let g:deoplete#enable_at_startup = 1
+let g:deoplete#auto_complete_delay = 0
+let g:deoplete#enable_smart_case = 1
+let g:deoplete#enable_ignore_case = 1
+
+"----------------------
+" vim-template
+"----------------------
+Plug 'thinca/vim-template', { 'on': [] }
+" テンプレート中に含まれる特定文字列を置き換える
+autocmd MyAutoCmd User plugin-template-loaded call s:template_keywords()
+function! s:template_keywords()
+    silent! %s/<+DATE+>/\=strftime('%Y-%m-%d')/g
+    silent! %s/<+FILENAME+>/\=expand('%:r')/g
+endfunction
+" テンプレート中に含まれる'<+CURSOR+>'にカーソルを移動
+autocmd MyAutoCmd User plugin-template-loaded
+    \   if search('<+CURSOR+>')
+    \ |   silent! execute 'normal! "_da>'
+    \ | endif
+
+"----------------------
+" Other-plugins
+"----------------------
+Plug 'kana/vim-smartinput', { 'on': [] }
+Plug 'tpope/vim-surround', { 'on': [] }
+Plug 'mattn/zencoding-vim', { 'on': [] }
+
+" Load plugin at insert mode
+augroup load_plugin_at_insert
+  autocmd!
+  autocmd InsertEnter * call plug#load(
+					\'deoplete.nvim',
+					\'vim-template',
+					\'vim-smartinput',
+					\'vim-surround',
+					\'zencoding-vim')
+					\| autocmd! load_plugin_at_insert
+augroup END
+
+"============================================
+" Execution_environment:
+"============================================
+
+"----------------------
+" quickrun
+"----------------------
+Plug 'thinca/vim-quickrun', { 'on': '<Plug>(quickrun)' }
+nmap <silent> <Leader>r <Plug>(quickrun)
+let g:quickrun_config = {
+    \ 'go': {'command': 'go run'},
+    \ }
+
+"============================================
+" Utility:
+"============================================
+
+"----------------------
+" Colorscheme
+"----------------------
+Plug 'w0ng/vim-hybrid'
+
+"----------------------
+" buftabs.vim
+"----------------------
+Plug 'vim-scripts/buftabs'
+let g:buftabs_only_basename=1
+
+"----------------------
+" tagbar
+"----------------------
+Plug 'majutsushi/tagbar', { 'on': 'TagbarToggle' }
+nnoremap <Leader>t :TagbarToggle<CR>
+let g:tagbar_left = 0
+let g:tagbar_autofocus = 1
+
+"============================================
+" Filetype:
+"============================================
+
+" Deployment Environment for go
+"----------------------
+" vim-go
+"----------------------
+Plug 'fatih/vim-go', { 'for': 'go' }
+let g:go_highlight_functions = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_structs = 1
+
+" Translate help to Japanese
+Plug 'vim-jp/vimdoc-ja', { 'for': 'help' }
+" Syntax for toml
+Plug 'cespare/vim-toml', { 'for': 'toml' }
+" Syntax for markdown
+Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
+" Syntax for pug(jade)
+Plug 'digitaltoad/vim-pug', { 'for': 'pug' }
+" Syntax for javascript
+Plug 'othree/yajs.vim', { 'for': ['javascript', 'javascript.jsx'] }
+Plug 'othree/es.next.syntax.vim', { 'for': ['javascript', 'javascript.jsx'] }
+Plug 'othree/javascript-libraries-syntax.vim',
+            \ { 'for': ['javascript', 'javascript.jsx'] }
+function! EnableJavascript()
+    " Setup for javascript-libraries-syntax
+    let g:used_javascript_libs = 'jquery,underscore,react,flux'
+    let b:javascript_lib_use_jquery = 1
+    let b:javascript_lib_use_underscore = 1
+    let b:javascript_lib_use_react = 1
+    let b:javascript_lib_use_flux = 1
+endfunction
+autocmd MyAutoCmd Filetype javascript,javascript.jsx call EnableJavascript()
+
+call plug#end()
 
 "--------------------------------------------------------------------
 " Plugins_end }}}
@@ -161,6 +260,7 @@ set virtualedit=block
 " Apperance: {{{
 "--------------------------------------------------------------------
 syntax enable
+filetype plugin indent on
 colorscheme hybrid
 " background color
 set background=dark
@@ -185,22 +285,6 @@ set colorcolumn=80
 " Display unprintable characters
 set list
 set listchars=tab:»-,trail:-,extends:»,precedes:«,eol:¬ " Filetype syntax
-autocmd MyAutoCmd BufNewFile,BufRead *.json    setf json
-autocmd MyAutoCmd BufNewFile,BufRead *.md      setf markdown
-autocmd MyAutoCmd BufNewFile,BufRead *.jquery  setf jquery
-autocmd MyAutoCmd BufNewFile,BufRead *.css     setf css3
-autocmd MyAutoCmd BufNewFile,BufRead *.txt     setf hybrid
-autocmd MyAutoCmd BufNewFile,BufRead *.go      setf go
-autocmd MyAutoCmd BufNewFile,BufRead *.pug     setf pug
-function! EnableJavascript()
-    " Setup for javascript-libraries-syntax
-    let g:used_javascript_libs = 'jquery,underscore,react,flux'
-    let b:javascript_lib_use_jquery = 1
-    let b:javascript_lib_use_underscore = 1
-    let b:javascript_lib_use_react = 1
-    let b:javascript_lib_use_flux = 1
-endfunction
-autocmd MyAutoCmd Filetype javascript,javascript.jsx call EnableJavascript()
 "--------------------------------------------------------------------
 " Apperance_end }}}
 "====================================================================
@@ -252,11 +336,11 @@ set incsearch
 " Highlight the search charcters
 set hlsearch
 " Tern off the highlight search
-nnoremap <silent><ESC>  :<C-u>nohlsearch<CR>
+nnoremap <silent><C-l>  :nohlsearch<CR>
 " Search the selected charcters
 vnoremap <silent> // y/<C-R>=escape(@", '\\/.*$^~[]')<CR><CR>
 " Replace the selected charcters
-vnoremap /r "xy:%s/<C-R>=escape(@x, '\\/.*$^~[]')<CR>//gc<Left><Left><Left>
+vnoremap /r "xy:%s/\<<C-R>=escape(@x, '\\/.*$^~[]')<CR>\>//gc<Left><Left><Left>
 "--------------------------------------------------------------------
 " Search_end }}}
 "====================================================================
@@ -299,14 +383,14 @@ cnoremap <C-d> <Del>
 cnoremap <C-b> <Left>
 cnoremap <C-f> <Right>
 " Buffer manipulate
-nnoremap <silent><C-p> :<C-u>bp<CR>
-nnoremap <silent><C-n> :<C-u>bn<CR>
+nnoremap <silent><c-j> :<C-u>bp<CR>
+nnoremap <silent><C-k> :<C-u>bn<CR>
 nnoremap <leader>d :<C-u>bd<CR>
-" Window manipulate
-nnoremap <silent><C-h> <C-w>h
-nnoremap <silent><C-j> <C-w>j
-nnoremap <silent><C-k> <C-w>k
-nnoremap <silent><C-l> <C-w>l
+"" Window manipulate
+"nnoremap <silent><C-h> <C-w>h
+"nnoremap <silent><C-j> <C-w>j
+"nnoremap <silent><C-k> <C-w>k
+"nnoremap <silent><C-l> <C-w>l
 " ESC assign
 inoremap <C-@> <ESC>
 inoremap jj <Esc>
@@ -338,8 +422,8 @@ set fileformats=unix,dos,mac
 "====================================================================
 " Terminal: {{{
 "--------------------------------------------------------------------
-set termkey=<C-q>
-noremap <silent><leader>t :terminal<CR>
+set termkey=<A-q>
+noremap <silent><leader>s :terminal<CR>
 tnoremap <Esc> <C-\><C-n>
 "--------------------------------------------------------------------
 " Terminal_end }}}
@@ -354,6 +438,7 @@ if has('unnamedplus')
 else
     set clipboard& clipboard+=unnamed
 endif
+
 " Buffer auto command
 augroup BufferAuto
     autocmd!
@@ -362,6 +447,7 @@ augroup BufferAuto
     " When save, remove trailing spaces
     autocmd BufWritePre * :%s/\s\+$//ge
 augroup END
+
 "--------------------------------------------------------------------
 " Utility_end }}}
 "====================================================================
@@ -394,3 +480,4 @@ if filereadable(s:local_vimrc)
         execute 'source ' . s:local_vimrc
 endif
 "====================================================================
+
