@@ -26,6 +26,14 @@ let mapleader = ' '
 " Plugins: {{{
 "--------------------------------------------------------------------
 
+"" The next package to be installed
+" ack.vim
+" snippet
+" ale
+" vim-lsp
+" polyglot
+" easymotion
+
 if empty(glob('~/.vim/autoload/plug.vim'))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -68,38 +76,19 @@ let g:deoplete#enable_smart_case = 1
 let g:deoplete#enable_ignore_case = 1
 
 "----------------------
-" vim-template
-"----------------------
-Plug 'thinca/vim-template', { 'on': [] }
-" テンプレート中に含まれる特定文字列を置き換える
-autocmd MyAutoCmd User plugin-template-loaded call s:template_keywords()
-function! s:template_keywords()
-    silent! %s/<+DATE+>/\=strftime('%Y-%m-%d')/g
-    silent! %s/<+FILENAME+>/\=expand('%:r')/g
-endfunction
-" テンプレート中に含まれる'<+CURSOR+>'にカーソルを移動
-autocmd MyAutoCmd User plugin-template-loaded
-    \   if search('<+CURSOR+>')
-    \ |   silent! execute 'normal! "_da>'
-    \ | endif
-
-"----------------------
 " Other-plugins
 "----------------------
 Plug 'kana/vim-smartinput', { 'on': [] }
-Plug 'tpope/vim-surround', { 'on': [] }
-Plug 'mattn/zencoding-vim', { 'on': [] }
+Plug 'mattn/emmet-vim', { 'on': [] }
 
 " Load plugin at insert mode
-augroup load_plugin_at_insert
-  autocmd!
-  autocmd InsertEnter * call plug#load(
-					\'deoplete.nvim',
-					\'vim-template',
-					\'vim-smartinput',
-					\'vim-surround',
-					\'zencoding-vim')
-					\| autocmd! load_plugin_at_insert
+augroup LoadPluginInsertHook
+    autocmd!
+    autocmd InsertEnter * call plug#load(
+                \ 'deoplete.nvim',
+                \ 'vim-smartinput',
+                \ 'emmet-vim')
+                \ | autocmd! LoadPluginInsertHook
 augroup END
 
 "============================================
@@ -110,7 +99,7 @@ augroup END
 " quickrun
 "----------------------
 Plug 'thinca/vim-quickrun', { 'on': '<Plug>(quickrun)' }
-nmap <silent> <Leader>r <Plug>(quickrun)
+nmap <silent><Leader>r <Plug>(quickrun)
 let g:quickrun_config = {
     \ 'go': {'command': 'go run'},
     \ }
@@ -125,10 +114,96 @@ let g:quickrun_config = {
 Plug 'w0ng/vim-hybrid'
 
 "----------------------
+" caw
+"----------------------
+Plug 'tyru/caw.vim'
+nmap <C-_> <Plug>(caw:zeropos:toggle)
+vmap <C-_> <Plug>(caw:zeropos:toggle)
+
+"----------------------
+" Surround
+"----------------------
+Plug 'tpope/vim-surround'
+
+"----------------------
+" gitgutter
+"----------------------
+Plug 'airblade/vim-gitgutter'
+set signcolumn=yes
+
+"----------------------
+" fugitive
+"----------------------
+Plug 'tpope/vim-fugitive', { 'on': ['Gblame', 'Gbrowse', 'Glog'] }
+
+"----------------------
+" Filer
+"----------------------
+Plug 'cocopon/vaffle.vim'
+nnoremap <silent><Leader>e :<C-u>Vaffle<CR>
+function! s:customize_vaffle_mappings() abort
+    " Customize key mappings here
+    nmap <buffer> <Bslash> <Plug>(vaffle-open-root)
+    nmap <buffer> s        <Plug>(vaffle-toggle-current)
+    nmap <buffer> <ESC>    <Plug>(vaffle-quit)
+endfunction
+augroup VaffleKeymap
+    autocmd!
+    autocmd FileType vaffle call s:customize_vaffle_mappings()
+augroup END
+
+"----------------------
 " buftabs.vim
 "----------------------
 Plug 'vim-scripts/buftabs'
 let g:buftabs_only_basename=1
+
+"----------------------
+" lightline
+"----------------------
+Plug 'itchyny/lightline.vim'
+let g:lightline = {
+        \ 'mode_map': {'c': 'NORMAL'},
+        \ 'active': {
+        \   'left': [
+        \       [ 'mode', 'paste' ],
+        \       [ 'bufnum' ],
+        \       [ 'readonly', 'absolutepath', 'modified' ],
+        \   ],
+        \   'right': [
+        \       [ 'linepercent' ],
+        \       [ 'branch' ],
+        \       [ 'filetype' ],
+        \       [ 'fileencoding' ],
+        \   ]
+        \ },
+        \ 'component': {
+        \   'linepercent': '%P[%L]'
+        \ },
+        \ 'component_function': {
+        \   'branch': 'LightlineBranch',
+        \   'mode': 'LightlineMode',
+        \   'filetype': 'LightlineFiletype',
+        \   'fileencoding': 'LightlineFileencoding',
+        \ },
+        \ }
+
+function! LightlineMode()
+    return winwidth(0) > 70 ? lightline#mode() : ''
+endfunction
+
+function! LightlineBranch()
+    " Define in StatuslineGitBranch()
+    return winwidth(0) > 70 ? b:gitbranch : ''
+endfunction
+
+function! LightlineFiletype()
+    return winwidth(0) > 70 ? (&filetype !=# '' ? &filetype : 'no ft') : ''
+endfunction
+
+function! LightlineFileencoding()
+    return winwidth(0) > 70 ? (&fenc !=# '' ? &fenc : &enc) : ''
+endfunction
 
 "----------------------
 " tagbar
@@ -153,8 +228,6 @@ let g:go_highlight_structs = 1
 
 " Translate help to Japanese
 Plug 'vim-jp/vimdoc-ja', { 'for': 'help' }
-" Syntax for toml
-Plug 'cespare/vim-toml', { 'for': 'toml' }
 " Syntax for markdown
 Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
 " Syntax for pug(jade)
@@ -198,7 +271,7 @@ function! StatuslineGitBranch()
         let l:gitrevparse=system("git rev-parse --abbrev-ref HEAD")
         lcd -
         if l:gitrevparse!~"fatal: not a git repository"
-            let b:gitbranch="(".substitute(l:gitrevparse, '\n', '', 'g').") "
+            let b:gitbranch=substitute(l:gitrevparse, '\n', '', 'g')
         endif
     endif
 endfunction
@@ -209,10 +282,12 @@ augroup GetGitBranch
 augroup END
 
 " Status line color change on insert mode
-augroup InsertHook
+augroup StatusChangeInsertHook
     autocmd!
-    autocmd InsertEnter * highlight StatusLine ctermfg=245 ctermbg=235 guifg=#ccdc90 guibg=#2E4340
-    autocmd InsertLeave * highlight StatusLine ctermfg=235 ctermbg=245 guifg=#2E4340 guibg=#ccdc90
+    autocmd InsertEnter * highlight StatusLine ctermfg=245 ctermbg=235
+                \ guifg=#ccdc90 guibg=#2E4340
+    autocmd InsertLeave * highlight StatusLine ctermfg=235 ctermbg=245
+                \ guifg=#2E4340 guibg=#ccdc90
 augroup END
 "--------------------------------------------------------------------
 " StatusLine_end }}}
@@ -245,7 +320,9 @@ set formatoptions=lmoq
 set helplang=ja,en
 " Fold with marker
 set foldmethod=marker
-" Number of lines to find a vim setting
+" keycode timeout
+set timeout timeoutlen=1000 ttimeoutlen=10
+" Number of LINes to find a vim setting
 set modelines=5
 set tags=./tags;
 " Add '<' and '>' to the corresponding brackets
@@ -336,7 +413,7 @@ set incsearch
 " Highlight the search charcters
 set hlsearch
 " Tern off the highlight search
-nnoremap <silent><C-l>  :nohlsearch<CR>
+nnoremap <silent><ESC>  :<C-u>nohlsearch<CR>
 " Search the selected charcters
 vnoremap <silent> // y/<C-R>=escape(@", '\\/.*$^~[]')<CR><CR>
 " Replace the selected charcters
@@ -424,7 +501,7 @@ set fileformats=unix,dos,mac
 "--------------------------------------------------------------------
 set termkey=<A-q>
 noremap <silent><leader>s :terminal<CR>
-tnoremap <Esc> <C-\><C-n>
+tnoremap <Esc> <C-\><C-n>:<C-u>bd!<CR>
 "--------------------------------------------------------------------
 " Terminal_end }}}
 "====================================================================
@@ -443,7 +520,8 @@ endif
 augroup BufferAuto
     autocmd!
     " Automove to current directory
-    autocmd BufNewFile,BufRead,BufEnter * if isdirectory(expand("%:p:h")) | cd %:p:h | endif
+    autocmd BufNewFile,BufRead,BufEnter * if isdirectory(expand("%:p:h"))
+                \ | cd %:p:h | endif
     " When save, remove trailing spaces
     autocmd BufWritePre * :%s/\s\+$//ge
 augroup END
@@ -467,8 +545,13 @@ set viminfo='50,<1000,s100,\"50,!
 " Change the effect of mkview command
 set viewoptions=folds,cursor
 " Save fold settings
-autocmd BufWritePost * if expand('%') != '' && &buftype !~ 'nofile' | mkview | endif
-autocmd BufRead * if expand('%') != '' && &buftype !~ 'nofile' | silent loadview | endif
+augroup BackupSave
+    autocmd!
+    autocmd BufWritePost * if expand('%') != '' && &buftype !~ 'nofile'
+                \ | mkview | endif
+    autocmd BufRead * if expand('%') != '' && &buftype !~ 'nofile'
+                \ | silent loadview | endif
+augroup END
 "--------------------------------------------------------------------
 " Backup_end }}}
 "====================================================================
