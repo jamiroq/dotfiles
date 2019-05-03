@@ -61,6 +61,14 @@ linux*)
     ;;
 esac
 
+if [[ $(uname -r) =~ 'Microsoft' ]]; then
+    alias clip="clip.exe"
+elif [[ $(uname) == 'Linux' ]]; then
+    alias clip="xsel"
+elif [[ $(uname) == 'Darwin' ]]; then
+    alias clip="pbcopy"
+fi
+
 # default command
 alias la='ls -lahF'
 alias ll='ls -lhF'
