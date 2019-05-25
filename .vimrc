@@ -1,5 +1,5 @@
 "====================================================================
-" for Vim version : 8.0
+" for Vim version : 8.1
 "====================================================================
 
 "====================================================================
@@ -35,9 +35,9 @@ let mapleader = ' '
 " easymotion
 
 if empty(glob('~/.vim/autoload/plug.vim'))
-  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
 call plug#begin()
@@ -101,8 +101,8 @@ augroup END
 Plug 'thinca/vim-quickrun', { 'on': '<Plug>(quickrun)' }
 nmap <silent><Leader>r <Plug>(quickrun)
 let g:quickrun_config = {
-    \ 'go': {'command': 'go run'},
-    \ }
+            \ 'go': {'command': 'go run'},
+            \ }
 
 "============================================
 " Utility:
@@ -121,9 +121,23 @@ nmap <C-_> <Plug>(caw:zeropos:toggle)
 vmap <C-_> <Plug>(caw:zeropos:toggle)
 
 "----------------------
+" fakeclip
+"----------------------
+Plug 'kana/vim-fakeclip'
+map <Leader>y <Plug>(fakeclip-y)
+map <Leader>p <Plug>(fakeclip-p)
+
+"----------------------
 " Surround
 "----------------------
 Plug 'tpope/vim-surround'
+
+"----------------------
+" open-browser
+"----------------------
+Plug 'tyru/open-browser.vim'
+nmap <Leader>g <Plug>(openbrowser-smart-search)
+vmap <Leader>g <Plug>(openbrowser-smart-search)
 
 "----------------------
 " gitgutter
@@ -153,16 +167,11 @@ augroup VaffleKeymap
 augroup END
 
 "----------------------
-" buftabs.vim
-"----------------------
-Plug 'vim-scripts/buftabs'
-let g:buftabs_only_basename=1
-
-"----------------------
 " lightline
 "----------------------
 Plug 'itchyny/lightline.vim'
 let g:lightline = {
+        \ 'colorscheme': 'seoul256',
         \ 'mode_map': {'c': 'NORMAL'},
         \ 'active': {
         \   'left': [
@@ -189,7 +198,7 @@ let g:lightline = {
         \ }
 
 function! LightlineMode()
-    return winwidth(0) > 70 ? lightline#mode() : ''
+    return winwidth(0) > 60 ? lightline#mode() : ''
 endfunction
 
 function! LightlineBranch()
@@ -361,7 +370,7 @@ set splitbelow
 set colorcolumn=80
 " Display unprintable characters
 set list
-set listchars=tab:»-,trail:-,extends:»,precedes:«,eol:¬ " Filetype syntax
+set listchars=tab:»-,trail:-,extends:»,precedes:«,eol:¬
 "--------------------------------------------------------------------
 " Apperance_end }}}
 "====================================================================
@@ -413,7 +422,7 @@ set incsearch
 " Highlight the search charcters
 set hlsearch
 " Tern off the highlight search
-nnoremap <silent><ESC>  :<C-u>nohlsearch<CR>
+nnoremap <silent><C-@>  :<C-u>nohlsearch<CR><ESC>
 " Search the selected charcters
 vnoremap <silent> // y/<C-R>=escape(@", '\\/.*$^~[]')<CR><CR>
 " Replace the selected charcters
@@ -463,14 +472,8 @@ cnoremap <C-f> <Right>
 nnoremap <silent><c-j> :<C-u>bp<CR>
 nnoremap <silent><C-k> :<C-u>bn<CR>
 nnoremap <leader>d :<C-u>bd<CR>
-"" Window manipulate
-"nnoremap <silent><C-h> <C-w>h
-"nnoremap <silent><C-j> <C-w>j
-"nnoremap <silent><C-k> <C-w>k
-"nnoremap <silent><C-l> <C-w>l
 " ESC assign
-inoremap <C-@> <ESC>
-inoremap jj <Esc>
+inoremap jj <ESC>
 " Select to the end in visual mode
 vnoremap v $h
 " Save any changes
@@ -499,7 +502,7 @@ set fileformats=unix,dos,mac
 "====================================================================
 " Terminal: {{{
 "--------------------------------------------------------------------
-set termkey=<A-q>
+set termwinkey=<A-q>
 noremap <silent><leader>s :terminal<CR>
 tnoremap <Esc> <C-\><C-n>:<C-u>bd!<CR>
 "--------------------------------------------------------------------
@@ -560,7 +563,7 @@ augroup END
 " Load an external file
 let s:local_vimrc = expand('~/.vimrc.local')
 if filereadable(s:local_vimrc)
-        execute 'source ' . s:local_vimrc
+    execute 'source ' . s:local_vimrc
 endif
 "====================================================================
 
