@@ -1,5 +1,5 @@
 #===============================================================================
-# for zsh version 5.0.8
+# for zsh version 5.7.1
 #===============================================================================
 
 #===============================================================================
@@ -12,38 +12,25 @@ colors
 setopt prompt_subst
 
 ## PROMPT:左側に表示される通常のプロンプト
-if [ -n "${SSH_CONNECTION}" ]; then
-    PROMPT="%F{cyan}%m %n%f:[%~]"$'\n$ '
-else
-    PROMPT="%n:[%~]"$'\n$ '
-fi
+PROMPT="%F{cyan}%m%f:%F{green}%n%f [%~]"$'\n%(!.%F{red}#%f.>) '
 
 ## PROMPT2:2桁以上のコマンドを入力する際に表示されるプロンプト
 PROMPT2="%{${fg[green]}%}%_> %{${reset_color}%}"
 
 ## RPROMPT:右側に表示されるプロンプト
 autoload -Uz vcs_info
-autoload -Uz is-at-least
-if is-at-least 4.3.10; then
-    zstyle ':vcs_info:git:*' check-for-changes true
-    zstyle ':vcs_info:git:*' stagedstr "+"
-    zstyle ':vcs_info:git:*' unstagedstr "-"
-    zstyle ':vcs_info:git:*' formats '(%s)-[%b] %c%u'
-    zstyle ':vcs_info:git:*' actionformats '(%s)-[%b|%a] %c%u'
-else
-    zstyle ':vcs_info:*' enable git svn hg bzr
-    zstyle ':vcs_info:*' formats '(%s)-[%b]'
-    zstyle ':vcs_info:*' actionformats '(%s)-[%b|%a]'
-    zstyle ':vcs_info:(svn|bzr):*' branchformat '%b:r%r'
-    zstyle ':vcs_info:bzr:*' use-simple true
-fi
+zstyle ':vcs_info:git:*' check-for-changes true
+zstyle ':vcs_info:git:*' stagedstr "%F{yellow}(+)%f"
+zstyle ':vcs_info:git:*' unstagedstr "%F{red}(-)%f"
+zstyle ':vcs_info:*' formats '%F{green}%c%u [%b]%f'
+zstyle ':vcs_info:*' actionformats '[%b|%a]'
 
-function _update_vcs_info_msg() {
+function _update_vcs_info() {
     LANG=en_US.UTF-8 vcs_info
-    RPROMPT="%F{green}${vcs_info_msg_0_}%f"
+    RPROMPT="${vcs_info_msg_0_}"
 }
 autoload -Uz add-zsh-hook
-add-zsh-hook precmd _update_vcs_info_msg
+add-zsh-hook precmd _update_vcs_info
 
 #-------------------------------------------------------------------------------
 # Prompt_decoration_END }}}
@@ -70,14 +57,17 @@ elif [[ $(uname) == 'Darwin' ]]; then
 fi
 
 # default command
+alias g='git'
 alias la='ls -lahF'
 alias ll='ls -lhF'
 alias rm='rm -i'
 alias mv='mv -i'
+alias vivi='vim ~/.vimrc'
 alias gfind='find . -type f -print | xargs grep'
 
 # lvできちんと表示されるようにする
 alias lv='lv -c -T8192'
+
 #-------------------------------------------------------------------------------
 # Alias_END }}}
 #===============================================================================
@@ -99,6 +89,22 @@ function _ls_command() {
 }
 zle -N _ls_command
 bindkey '^O' _ls_command
+
+## ^Gでghqで管理するリポジトリに移動
+function ghq-look () {
+    BUFFER="cd $(ghq list --full-path | fzf --prompt='cd-ghq >')"
+    zle accept-line
+}
+zle -N ghq-look
+bindkey '^G' ghq-look
+
+## ^Sでコマンドラインスタックを実行する(Required NO_FLOW_CONTROL)
+show_buffer_stack() {
+    zle -M "stack: ${BUFFER}"
+    zle push-line-or-edit
+}
+zle -N show_buffer_stack
+bindkey '^S' show_buffer_stack
 
 #-------------------------------------------------------------------------------
 # Keybind_END }}}
@@ -204,8 +210,6 @@ setopt brace_ccl
 setopt extended_glob
 ## Disuse ambiguous output redirect
 setopt no_multios
-## TABでグロブを展開する
-#setopt glob_complete
 
 ## コアダンプサイズを制限
 limit coredumpsize 102400
@@ -225,13 +229,8 @@ kterm*|xterm*)
   ;;
 esac
 
-#^qでコマンドラインスタックを実行する(Required NO_FLOW_CONTROL)
-show_buffer_stack() {
-    zle -M "stack: ${BUFFER}"
-    zle push-line-or-edit
-}
-zle -N show_buffer_stack
-bindkey '^Q' show_buffer_stack
+## fzfコンフィグ設定読み込み
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 #-------------------------------------------------------------------------------
 # Utility_END }}}
