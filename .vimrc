@@ -33,6 +33,7 @@ let mapleader = ' '
 " vim-lsp
 " polyglot
 " easymotion
+" coc.vim
 
 if empty(glob('~/.vim/autoload/plug.vim'))
     silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
@@ -49,7 +50,7 @@ call plug#begin()
 "----------------------
 " fzf
 "----------------------
-Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --all'}
+Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --all --no-bash'}
 Plug 'junegunn/fzf.vim'
 command! FZFMru call fzf#run({
             \  'source':  v:oldfiles,
@@ -91,6 +92,7 @@ augroup LoadPluginInsertHook
                 \ | autocmd! LoadPluginInsertHook
 augroup END
 
+
 "============================================
 " Execution_environment:
 "============================================
@@ -100,9 +102,6 @@ augroup END
 "----------------------
 Plug 'thinca/vim-quickrun', { 'on': '<Plug>(quickrun)' }
 nmap <silent><Leader>r <Plug>(quickrun)
-let g:quickrun_config = {
-            \ 'go': {'command': 'go run'},
-            \ }
 
 "============================================
 " Utility:
@@ -203,7 +202,7 @@ endfunction
 
 function! LightlineBranch()
     " Define in StatuslineGitBranch()
-    return winwidth(0) > 70 ? b:gitbranch : ''
+    return exists('b:gitbranch') ? b:gitbranch : ''
 endfunction
 
 function! LightlineFiletype()
@@ -234,7 +233,12 @@ Plug 'fatih/vim-go', { 'for': 'go' }
 let g:go_highlight_functions = 1
 let g:go_highlight_methods = 1
 let g:go_highlight_structs = 1
+let g:go_fmt_command = "goimports"
+let g:go_auto_type_info = 1
 
+"----------------------
+" other
+"----------------------
 " Translate help to Japanese
 Plug 'vim-jp/vimdoc-ja', { 'for': 'help' }
 " Syntax for markdown
@@ -270,7 +274,9 @@ set laststatus=2
 
 " Statusline format
 set statusline=
-set statusline+=%{b:gitbranch}
+if exists('b:gitbranch')
+    set statusline+=%{b:gitbranch}
+endif
 set statusline+=%m
 set statusline+=%=(%<%F\ )%r%h%w%y%{'['.(&fenc!=''?&fenc:&enc).']'}[%l/%L](%P)"
 function! StatuslineGitBranch()
@@ -472,8 +478,12 @@ cnoremap <C-f> <Right>
 nnoremap <silent><c-j> :<C-u>bp<CR>
 nnoremap <silent><C-k> :<C-u>bn<CR>
 nnoremap <leader>d :<C-u>bd<CR>
+" Resize window
+nnoremap <silent>+ <c-w>+
+nnoremap <silent>- <c-w>-
 " ESC assign
 inoremap jj <ESC>
+inoremap <C-@> <ESC>
 " Select to the end in visual mode
 vnoremap v $h
 " Save any changes
@@ -504,7 +514,6 @@ set fileformats=unix,dos,mac
 "--------------------------------------------------------------------
 set termwinkey=<A-q>
 noremap <silent><leader>s :terminal<CR>
-tnoremap <Esc> <C-\><C-n>:<C-u>bd!<CR>
 "--------------------------------------------------------------------
 " Terminal_end }}}
 "====================================================================
@@ -566,4 +575,3 @@ if filereadable(s:local_vimrc)
     execute 'source ' . s:local_vimrc
 endif
 "====================================================================
-
