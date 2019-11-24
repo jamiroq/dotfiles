@@ -92,7 +92,10 @@ bindkey '^O' _ls_command
 
 ## ^Gでghqで管理するリポジトリに移動
 function ghq-look () {
-    BUFFER="cd $(ghq list --full-path | fzf --prompt='cd-ghq >')"
+    res=$(ghq list --full-path | fzf --prompt='cd-ghq >')
+    if [ -n "$res" ]; then
+        BUFFER="cd $res"
+    fi
     zle accept-line
 }
 zle -N ghq-look
@@ -115,7 +118,7 @@ bindkey '^S' show_buffer_stack
 #-------------------------------------------------------------------------------
 ## 履歴を :開始時刻:経過時間:コマンド の形で保存する。
 setopt extended_history
-## 複数のzshで実行したコマンドをヒストリに保存する
+## zshの終了を待たずコマンドをヒストリに保存する
 setopt inc_append_history
 ## 同一ホストで動いているzshで履歴 を共有
 setopt share_history
