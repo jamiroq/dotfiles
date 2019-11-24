@@ -30,10 +30,8 @@ let mapleader = ' '
 " ack.vim
 " snippet
 " ale
-" vim-lsp
 " polyglot
 " easymotion
-" coc.vim
 
 if empty(glob('~/.vim/autoload/plug.vim'))
     silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
@@ -66,15 +64,35 @@ nnoremap <Leader>f :Files<CR>
 "============================================
 
 "----------------------
-" deoplete
+" vim-lsp
 "----------------------
-Plug 'Shougo/deoplete.nvim', { 'on': [] }
-Plug 'roxma/nvim-yarp'
-Plug 'roxma/vim-hug-neovim-rpc'
-let g:deoplete#enable_at_startup = 1
-let g:deoplete#auto_complete_delay = 0
-let g:deoplete#enable_smart_case = 1
-let g:deoplete#enable_ignore_case = 1
+Plug 'prabirshrestha/async.vim'
+Plug 'prabirshrestha/asyncomplete.vim'
+Plug 'prabirshrestha/asyncomplete-lsp.vim'
+Plug 'prabirshrestha/vim-lsp'
+" nmap <silent> <Leader>d :<C-u>LspDefinition<CR>
+" nmap <silent> <Leader>i :<C-u>LspImplementation<CR>
+" nmap <silent> <Leader>r :<C-u>LspReferences<CR>
+" nmap <silent> <Leader>h :<C-u>LspHover<CR>
+" if executable('gopls')
+"   augroup LspGo
+"     au!
+"     au User lsp_setup call lsp#register_server({
+"       \ 'name': 'gopls',
+"       \ 'cmd': {server_info->['gopls', '-mode', 'stdio']},
+"       \ 'whitelist': ['go'],
+"       \ })
+"     autocmd BufWritePre *.go LspDocumentFormatSync
+"   augroup END
+" endif
+
+"----------------------
+" coc.nvim
+"----------------------
+" Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" nmap <silent> <Leader>d <Plug>(coc-definition)
+" nmap <silent> <Leader>i <Plug>(coc-implementation)
+" nmap <silent> <Leader>r <Plug>(coc-references)
 
 "----------------------
 " Other-plugins
@@ -86,10 +104,9 @@ Plug 'mattn/emmet-vim', { 'on': [] }
 augroup LoadPluginInsertHook
     autocmd!
     autocmd InsertEnter * call plug#load(
-                \ 'deoplete.nvim',
-                \ 'vim-smartinput',
-                \ 'emmet-vim')
-                \ | autocmd! LoadPluginInsertHook
+               \ 'vim-smartinput',
+               \ 'emmet-vim')
+               \ | autocmd! LoadPluginInsertHook
 augroup END
 
 
@@ -101,7 +118,7 @@ augroup END
 " quickrun
 "----------------------
 Plug 'thinca/vim-quickrun', { 'on': '<Plug>(quickrun)' }
-nmap <silent><Leader>r <Plug>(quickrun)
+nmap <silent><Leader>q <Plug>(quickrun)
 
 "============================================
 " Utility:
@@ -132,6 +149,14 @@ map <Leader>p <Plug>(fakeclip-p)
 Plug 'tpope/vim-surround'
 
 "----------------------
+" ack.vim
+"----------------------
+Plug 'mileszs/ack.vim'
+if executable('rg')
+    let g:ackprg = 'rg --color never --column'
+endif
+
+"----------------------
 " open-browser
 "----------------------
 Plug 'tyru/open-browser.vim'
@@ -147,7 +172,7 @@ set signcolumn=yes
 "----------------------
 " fugitive
 "----------------------
-Plug 'tpope/vim-fugitive', { 'on': ['Gblame', 'Gbrowse', 'Glog'] }
+Plug 'tpope/vim-fugitive'
 
 "----------------------
 " Filer
@@ -202,7 +227,11 @@ endfunction
 
 function! LightlineBranch()
     " Define in StatuslineGitBranch()
-    return exists('b:gitbranch') ? b:gitbranch : ''
+    if exists('*fugitive#head')
+        return fugitive#head()
+    else
+        return exists('b:gitbranch') ? b:gitbranch : ''
+    endif
 endfunction
 
 function! LightlineFiletype()
@@ -225,7 +254,6 @@ let g:tagbar_autofocus = 1
 " Filetype:
 "============================================
 
-" Deployment Environment for go
 "----------------------
 " vim-go
 "----------------------
@@ -446,7 +474,8 @@ nnoremap q: <Nop>
 nnoremap ZZ <Nop>
 nnoremap ZQ <Nop>
 " help search
-nnoremap <S-k> :<C-u>vert bel help<Space><C-r><C-w><CR>
+nnoremap <S-k> :<C-u>help<Space><C-r><C-w><CR>
+nnoremap <C-k> :<C-u>vert bel help<Space><C-r><C-w><CR>
 " Move on line base
 nnoremap j gj
 nnoremap k gk
@@ -477,7 +506,6 @@ cnoremap <C-f> <Right>
 " Buffer manipulate
 nnoremap <silent><c-j> :<C-u>bp<CR>
 nnoremap <silent><C-k> :<C-u>bn<CR>
-nnoremap <leader>d :<C-u>bd<CR>
 " Resize window
 nnoremap <silent>+ <c-w>+
 nnoremap <silent>- <c-w>-
@@ -487,7 +515,7 @@ inoremap <C-@> <ESC>
 " Select to the end in visual mode
 vnoremap v $h
 " Save any changes
-noremap <leader><leader> :<C-u>up<CR>
+noremap <Leader><Leader> :<C-u>up<CR>
 " Edit vimrc/givmrc by Ev/Rv
 command! Ev edit $MYVIMRC
 command! Rv source $MYVIMRC
@@ -513,7 +541,7 @@ set fileformats=unix,dos,mac
 " Terminal: {{{
 "--------------------------------------------------------------------
 set termwinkey=<A-q>
-noremap <silent><leader>s :terminal<CR>
+noremap <silent><Leader>s :terminal<CR>
 "--------------------------------------------------------------------
 " Terminal_end }}}
 "====================================================================
