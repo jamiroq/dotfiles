@@ -27,7 +27,6 @@ let mapleader = ' '
 "--------------------------------------------------------------------
 
 "" The next package to be installed
-" ack.vim
 " snippet
 " ale
 " polyglot
@@ -70,34 +69,51 @@ Plug 'prabirshrestha/async.vim'
 Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'prabirshrestha/asyncomplete-lsp.vim'
 Plug 'prabirshrestha/vim-lsp'
-" nmap <silent> <Leader>d :<C-u>LspDefinition<CR>
-" nmap <silent> <Leader>i :<C-u>LspImplementation<CR>
-" nmap <silent> <Leader>r :<C-u>LspReferences<CR>
-" nmap <silent> <Leader>h :<C-u>LspHover<CR>
-" if executable('gopls')
-"   augroup LspGo
-"     au!
-"     au User lsp_setup call lsp#register_server({
-"       \ 'name': 'gopls',
-"       \ 'cmd': {server_info->['gopls', '-mode', 'stdio']},
-"       \ 'whitelist': ['go'],
-"       \ })
-"     autocmd BufWritePre *.go LspDocumentFormatSync
-"   augroup END
-" endif
+Plug 'mattn/vim-lsp-settings'
+let g:lsp_diagnostics_enabled = 1
+let g:lsp_diagnostics_echo_cursor = 1
+let g:lsp_text_edit_enabled = 0
+function! s:on_lsp_buffer_enabled() abort
+    setlocal omnifunc=lsp#complete
+    nmap <silent> <f2> <plug>(lsp-rename)
+    nmap <silent> <C-]> <plug>(lsp-definition)
+    nmap <silent> <Leader>d <plug>(lsp-definition)
+    nmap <silent> <Leader>i <plug>(lsp-implementation)
+    nmap <silent> <Leader>r <plug>(lsp-references)
+    nmap <silent> <Leader>h <plug>(lsp-hover)
+endfunction
+augroup lsp_exec
+    au!
+    autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+augroup END
 
 "----------------------
-" coc.nvim
+" caw
 "----------------------
-" Plug 'neoclide/coc.nvim', {'branch': 'release'}
-" nmap <silent> <Leader>d <Plug>(coc-definition)
-" nmap <silent> <Leader>i <Plug>(coc-implementation)
-" nmap <silent> <Leader>r <Plug>(coc-references)
+Plug 'tyru/caw.vim'
+nmap <C-_> <Plug>(caw:zeropos:toggle)
+vmap <C-_> <Plug>(caw:zeropos:toggle)
 
 "----------------------
-" Other-plugins
+" fakeclip
+"----------------------
+Plug 'kana/vim-fakeclip'
+map <Leader>y <Plug>(fakeclip-y)
+map <Leader>p <Plug>(fakeclip-p)
+
+"----------------------
+" Surround
+"----------------------
+Plug 'tpope/vim-surround'
+
+"----------------------
+" smartinput
 "----------------------
 Plug 'kana/vim-smartinput', { 'on': [] }
+
+"----------------------
+" emmet
+"----------------------
 Plug 'mattn/emmet-vim', { 'on': [] }
 
 " Load plugin at insert mode
@@ -128,25 +144,6 @@ nmap <silent><Leader>q <Plug>(quickrun)
 " Colorscheme
 "----------------------
 Plug 'w0ng/vim-hybrid'
-
-"----------------------
-" caw
-"----------------------
-Plug 'tyru/caw.vim'
-nmap <C-_> <Plug>(caw:zeropos:toggle)
-vmap <C-_> <Plug>(caw:zeropos:toggle)
-
-"----------------------
-" fakeclip
-"----------------------
-Plug 'kana/vim-fakeclip'
-map <Leader>y <Plug>(fakeclip-y)
-map <Leader>p <Plug>(fakeclip-p)
-
-"----------------------
-" Surround
-"----------------------
-Plug 'tpope/vim-surround'
 
 "----------------------
 " ack.vim
@@ -201,7 +198,7 @@ let g:lightline = {
         \   'left': [
         \       [ 'mode', 'paste' ],
         \       [ 'bufnum' ],
-        \       [ 'readonly', 'absolutepath', 'modified' ],
+        \       [ 'readonly', 'filename', 'modified' ],
         \   ],
         \   'right': [
         \       [ 'linepercent' ],
@@ -215,18 +212,13 @@ let g:lightline = {
         \ },
         \ 'component_function': {
         \   'branch': 'LightlineBranch',
-        \   'mode': 'LightlineMode',
+        \   'filename': 'LightlineFilename',
         \   'filetype': 'LightlineFiletype',
         \   'fileencoding': 'LightlineFileencoding',
         \ },
         \ }
 
-function! LightlineMode()
-    return winwidth(0) > 60 ? lightline#mode() : ''
-endfunction
-
 function! LightlineBranch()
-    " Define in StatuslineGitBranch()
     if exists('*fugitive#head')
         return fugitive#head()
     else
@@ -234,12 +226,16 @@ function! LightlineBranch()
     endif
 endfunction
 
+function! LightlineFilename()
+    return strlen(expand("%:p")) < (winwidth(0) - 45) ? expand("%:p") : expand("%")
+endfunction
+
 function! LightlineFiletype()
-    return winwidth(0) > 70 ? (&filetype !=# '' ? &filetype : 'no ft') : ''
+    return &filetype !=# '' ? &filetype : 'no ft'
 endfunction
 
 function! LightlineFileencoding()
-    return winwidth(0) > 70 ? (&fenc !=# '' ? &fenc : &enc) : ''
+    return &fenc !=# '' ? &fenc : &enc
 endfunction
 
 "----------------------
@@ -255,22 +251,13 @@ let g:tagbar_autofocus = 1
 "============================================
 
 "----------------------
-" vim-go
+" golang
 "----------------------
-Plug 'fatih/vim-go', { 'for': 'go' }
-let g:go_highlight_functions = 1
-let g:go_highlight_methods = 1
-let g:go_highlight_structs = 1
-let g:go_fmt_command = "goimports"
-let g:go_auto_type_info = 1
+Plug 'mattn/vim-goimports', { 'for': 'go' }
 
 "----------------------
-" other
+" JavaScript
 "----------------------
-" Translate help to Japanese
-Plug 'vim-jp/vimdoc-ja', { 'for': 'help' }
-" Syntax for markdown
-Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
 " Syntax for pug(jade)
 Plug 'digitaltoad/vim-pug', { 'for': 'pug' }
 " Syntax for javascript
@@ -287,6 +274,14 @@ function! EnableJavascript()
     let b:javascript_lib_use_flux = 1
 endfunction
 autocmd MyAutoCmd Filetype javascript,javascript.jsx call EnableJavascript()
+
+"----------------------
+" other
+"----------------------
+" Translate help to Japanese
+Plug 'vim-jp/vimdoc-ja', { 'for': 'help' }
+" Syntax for markdown
+Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
 
 call plug#end()
 
