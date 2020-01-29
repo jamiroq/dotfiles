@@ -5,19 +5,46 @@
 "====================================================================
 " Initialization: {{{
 "--------------------------------------------------------------------
-" This_is_vim
+" Encoding
+set encoding=utf-8
+scriptencoding utf-8
+set fileencodings=ucs-bom,utf-8,iso-2022-jp,sjis,cp932,euc-jp,cp20932
+set fileformats=unix,dos,mac
+
+" This is vim
 if &compatible
     set nocompatible
 endif
 
 " Initialize autocmd
-augroup MyAutoCmd
+augroup auvimrc
     autocmd!
 augroup END
 
 " Map leader
-let mapleader = ' '
+let g:mapleader = ' '
 
+"--------------------------------------------------------------------
+" Initialization_END }}}
+"====================================================================
+
+"====================================================================
+" Disable_default_plugin: {{{
+"--------------------------------------------------------------------
+let g:loaded_gzip              = 1
+let g:loaded_tar               = 1
+let g:loaded_tarPlugin         = 1
+let g:loaded_zip               = 1
+let g:loaded_zipPlugin         = 1
+let g:loaded_rrhelper          = 1
+let g:loaded_vimball           = 1
+let g:loaded_vimballPlugin     = 1
+let g:loaded_getscript         = 1
+let g:loaded_getscriptPlugin   = 1
+let g:loaded_netrw             = 1
+let g:loaded_netrwPlugin       = 1
+let g:loaded_netrwSettings     = 1
+let g:loaded_netrwFileHandlers = 1
 "--------------------------------------------------------------------
 " Initialization_END }}}
 "====================================================================
@@ -27,10 +54,10 @@ let mapleader = ' '
 "--------------------------------------------------------------------
 
 "" The next package to be installed
-" snippet
-" ale
-" polyglot
 " easymotion
+" vim-xtabline
+" ultisnips
+" coc, coc-pairs, coc-snippets
 
 if empty(glob('~/.vim/autoload/plug.vim'))
     silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
@@ -41,30 +68,10 @@ endif
 call plug#begin()
 
 "============================================
-" Filter:
+"  Input_support:
 "============================================
 
-"----------------------
-" fzf
-"----------------------
-Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --all --no-bash'}
-Plug 'junegunn/fzf.vim'
-command! FZFMru call fzf#run({
-            \  'source':  v:oldfiles,
-            \  'sink':    'e',
-            \  'options': '-m -x +s',
-            \  'down':    '40%'})
-nnoremap <Leader>m :FZFMru<CR>
-nnoremap <Leader>b :Buffers<CR>
-nnoremap <Leader>f :Files<CR>
-
-"============================================
-" Input_support:
-"============================================
-
-"----------------------
-" vim-lsp
-"----------------------
+" LSP
 Plug 'prabirshrestha/async.vim'
 Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'prabirshrestha/asyncomplete-lsp.vim'
@@ -76,120 +83,49 @@ let g:lsp_text_edit_enabled = 0
 function! s:on_lsp_buffer_enabled() abort
     setlocal omnifunc=lsp#complete
     nmap <silent> <f2> <plug>(lsp-rename)
-    nmap <silent> <C-]> <plug>(lsp-definition)
+    nmap <silent> <buffer> <C-]> <plug>(lsp-definition)
     nmap <silent> <Leader>d <plug>(lsp-definition)
     nmap <silent> <Leader>i <plug>(lsp-implementation)
     nmap <silent> <Leader>r <plug>(lsp-references)
     nmap <silent> <Leader>h <plug>(lsp-hover)
 endfunction
-augroup lsp_exec
-    au!
-    autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
-augroup END
+autocmd auvimrc User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
 
-"----------------------
-" caw
-"----------------------
+" Comment out
 Plug 'tyru/caw.vim'
 nmap <C-_> <Plug>(caw:zeropos:toggle)
 vmap <C-_> <Plug>(caw:zeropos:toggle)
 
-"----------------------
-" fakeclip
-"----------------------
+" Clipboard extension
 Plug 'kana/vim-fakeclip'
 map <Leader>y <Plug>(fakeclip-y)
 map <Leader>p <Plug>(fakeclip-p)
 
-"----------------------
-" Surround
-"----------------------
+" Parenthesis completion
+Plug 'cohama/lexima.vim'
+
+" Extend text object about surrounding characters
 Plug 'tpope/vim-surround'
 
-"----------------------
-" smartinput
-"----------------------
-Plug 'kana/vim-smartinput', { 'on': [] }
-
-"----------------------
-" emmet
-"----------------------
-Plug 'mattn/emmet-vim', { 'on': [] }
-
-" Load plugin at insert mode
-augroup LoadPluginInsertHook
-    autocmd!
-    autocmd InsertEnter * call plug#load(
-               \ 'vim-smartinput',
-               \ 'emmet-vim')
-               \ | autocmd! LoadPluginInsertHook
-augroup END
-
+" Detonation velocity html coding
+Plug 'mattn/emmet-vim'
 
 "============================================
-" Execution_environment:
+" Layout_customize:
 "============================================
 
-"----------------------
-" quickrun
-"----------------------
-Plug 'thinca/vim-quickrun', { 'on': '<Plug>(quickrun)' }
-nmap <silent><Leader>q <Plug>(quickrun)
-
-"============================================
-" Utility:
-"============================================
-
-"----------------------
-" Colorscheme
-"----------------------
+" Favorite Colorscheme
 Plug 'w0ng/vim-hybrid'
+Plug 'cocopon/iceberg.vim'
 
-"----------------------
-" ack.vim
-"----------------------
-Plug 'mileszs/ack.vim'
-if executable('rg')
-    let g:ackprg = 'rg --color never --column'
-endif
+" Highlight unique characters in a line for f or F
+Plug 'unblevable/quick-scope'
+let g:qs_highlight_on_keys = ['f', 'F']
 
-"----------------------
-" open-browser
-"----------------------
-Plug 'tyru/open-browser.vim'
-nmap <Leader>g <Plug>(openbrowser-smart-search)
-vmap <Leader>g <Plug>(openbrowser-smart-search)
+" Highlight same keyword
+Plug 'RRethy/vim-illuminate'
 
-"----------------------
-" gitgutter
-"----------------------
-Plug 'airblade/vim-gitgutter'
-set signcolumn=yes
-
-"----------------------
-" fugitive
-"----------------------
-Plug 'tpope/vim-fugitive'
-
-"----------------------
-" Filer
-"----------------------
-Plug 'cocopon/vaffle.vim'
-nnoremap <silent><Leader>e :<C-u>Vaffle<CR>
-function! s:customize_vaffle_mappings() abort
-    " Customize key mappings here
-    nmap <buffer> <Bslash> <Plug>(vaffle-open-root)
-    nmap <buffer> s        <Plug>(vaffle-toggle-current)
-    nmap <buffer> <ESC>    <Plug>(vaffle-quit)
-endfunction
-augroup VaffleKeymap
-    autocmd!
-    autocmd FileType vaffle call s:customize_vaffle_mappings()
-augroup END
-
-"----------------------
-" lightline
-"----------------------
+" Customize statusline/tabline
 Plug 'itchyny/lightline.vim'
 let g:lightline = {
         \ 'colorscheme': 'seoul256',
@@ -213,51 +149,79 @@ let g:lightline = {
         \ 'component_function': {
         \   'branch': 'LightlineBranch',
         \   'filename': 'LightlineFilename',
-        \   'filetype': 'LightlineFiletype',
-        \   'fileencoding': 'LightlineFileencoding',
         \ },
         \ }
 
 function! LightlineBranch()
-    if exists('*fugitive#head')
-        return fugitive#head()
-    else
-        return exists('b:gitbranch') ? b:gitbranch : ''
-    endif
+    try
+        let branch = fugitive#head()
+        return branch !=# '' ? ' '.branch : ''
+    catch
+        return ''
+    endtry
 endfunction
 
 function! LightlineFilename()
-    return strlen(expand("%:p")) < (winwidth(0) - 45) ? expand("%:p") : expand("%")
+    return strlen(expand('%:p')) < (winwidth(0) - 45) ? expand('%:p') : expand('%')
 endfunction
-
-function! LightlineFiletype()
-    return &filetype !=# '' ? &filetype : 'no ft'
-endfunction
-
-function! LightlineFileencoding()
-    return &fenc !=# '' ? &fenc : &enc
-endfunction
-
-"----------------------
-" tagbar
-"----------------------
-Plug 'majutsushi/tagbar', { 'on': 'TagbarToggle' }
-nnoremap <Leader>t :TagbarToggle<CR>
-let g:tagbar_left = 0
-let g:tagbar_autofocus = 1
 
 "============================================
-" Filetype:
+" Addtional_features:
 "============================================
 
-"----------------------
-" golang
-"----------------------
+" Fazzy fineder
+Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --all --no-bash'}
+Plug 'junegunn/fzf.vim'
+nnoremap <Leader>m :FZFMru<CR>
+nnoremap <Leader>b :Buffers<CR>
+nnoremap <Leader>f :Files<CR>
+command! FZFMru
+    \  call fzf#run({
+    \    'source':  v:oldfiles,
+    \    'sink':    'e',
+    \    'options': '-m -x +s',
+    \    'down':    '40%'})
+if executable('rg')
+    command! -bang -nargs=* Rg
+        \  call fzf#vim#grep(
+        \    'rg --column --line-number --no-heading --color=always '.<q-args>, 1,
+        \    fzf#vim#with_preview('right:50%:hidden', '?'), <bang>0)
+    cnoreabbrev rg Rg
+endif
+
+" Simple filer
+Plug 'cocopon/vaffle.vim'
+nnoremap <silent><Leader>e :<C-u>Vaffle<CR>
+function! s:customize_vaffle_mappings() abort
+    nmap <buffer> <Bslash> <Plug>(vaffle-open-root)
+    nmap <buffer> s        <Plug>(vaffle-toggle-current)
+    nmap <buffer> <ESC>    <Plug>(vaffle-quit)
+endfunction
+autocmd auvimrc FileType vaffle call s:customize_vaffle_mappings()
+
+" Task runnner
+Plug 'thinca/vim-quickrun', { 'on': '<Plug>(quickrun)' }
+nmap <silent> <Leader>q <Plug>(quickrun)
+
+" Open browser
+Plug 'tyru/open-browser.vim'
+nmap <Leader>g <Plug>(openbrowser-smart-search)
+vmap <Leader>g <Plug>(openbrowser-smart-search)
+
+" Display git diff in the sign column
+Plug 'airblade/vim-gitgutter'
+set signcolumn=yes
+
+" Git operator
+Plug 'tpope/vim-fugitive'
+
+"============================================
+" Filetype_plugin:
+"============================================
+
+" Autofomatter for golang
 Plug 'mattn/vim-goimports', { 'for': 'go' }
 
-"----------------------
-" JavaScript
-"----------------------
 " Syntax for pug(jade)
 Plug 'digitaltoad/vim-pug', { 'for': 'pug' }
 " Syntax for javascript
@@ -265,7 +229,7 @@ Plug 'othree/yajs.vim', { 'for': ['javascript', 'javascript.jsx'] }
 Plug 'othree/es.next.syntax.vim', { 'for': ['javascript', 'javascript.jsx'] }
 Plug 'othree/javascript-libraries-syntax.vim',
             \ { 'for': ['javascript', 'javascript.jsx'] }
-function! EnableJavascript()
+function! s:enable_javascript() abort
     " Setup for javascript-libraries-syntax
     let g:used_javascript_libs = 'jquery,underscore,react,flux'
     let b:javascript_lib_use_jquery = 1
@@ -273,15 +237,13 @@ function! EnableJavascript()
     let b:javascript_lib_use_react = 1
     let b:javascript_lib_use_flux = 1
 endfunction
-autocmd MyAutoCmd Filetype javascript,javascript.jsx call EnableJavascript()
+autocmd auvimrc Filetype javascript,javascriptreact call s:enable_javascript()
 
-"----------------------
-" other
-"----------------------
-" Translate help to Japanese
-Plug 'vim-jp/vimdoc-ja', { 'for': 'help' }
 " Syntax for markdown
 Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
+
+" Translate vimdoc to Japanese
+Plug 'vim-jp/vimdoc-ja', { 'for': 'help' }
 
 call plug#end()
 
@@ -290,52 +252,10 @@ call plug#end()
 "====================================================================
 
 "====================================================================
-" StatusLine: {{{
-"--------------------------------------------------------------------
-" View the status line always
-set laststatus=2
-
-" Statusline format
-set statusline=
-if exists('b:gitbranch')
-    set statusline+=%{b:gitbranch}
-endif
-set statusline+=%m
-set statusline+=%=(%<%F\ )%r%h%w%y%{'['.(&fenc!=''?&fenc:&enc).']'}[%l/%L](%P)"
-function! StatuslineGitBranch()
-    let b:gitbranch=""
-    if &modifiable
-        lcd %:p:h
-        let l:gitrevparse=system("git rev-parse --abbrev-ref HEAD")
-        lcd -
-        if l:gitrevparse!~"fatal: not a git repository"
-            let b:gitbranch=substitute(l:gitrevparse, '\n', '', 'g')
-        endif
-    endif
-endfunction
-
-augroup GetGitBranch
-    autocmd!
-    autocmd VimEnter,WinEnter,BufEnter * call StatuslineGitBranch()
-augroup END
-
-" Status line color change on insert mode
-augroup StatusChangeInsertHook
-    autocmd!
-    autocmd InsertEnter * highlight StatusLine ctermfg=245 ctermbg=235
-                \ guifg=#ccdc90 guibg=#2E4340
-    autocmd InsertLeave * highlight StatusLine ctermfg=235 ctermbg=245
-                \ guifg=#2E4340 guibg=#ccdc90
-augroup END
-"--------------------------------------------------------------------
-" StatusLine_end }}}
-"====================================================================
-
-"====================================================================
 " Basics: {{{
 "--------------------------------------------------------------------
 " To mute the beep
-set vb t_vb=
+set belloff=all
 " Speed up terminal drawing
 set ttyfast
 " If the file is rewritten, read automatically
@@ -353,20 +273,24 @@ set whichwrap=b,s,h,l,<,>,[,]
 " Not wrapped automatically
 set textwidth=0
 " Text formatting option add multi-byte
-set formatoptions=lmoq
+set formatoptions& formatoptions+=rmb
 " Help language
 set helplang=ja,en
 " Fold with marker
 set foldmethod=marker
 " keycode timeout
 set timeout timeoutlen=1000 ttimeoutlen=10
-" Number of LINes to find a vim setting
+" Number of lines to find a vim setting
 set modelines=5
 set tags=./tags;
 " Add '<' and '>' to the corresponding brackets
 set matchpairs& matchpairs+=<:>
 " Only rectangular visual mode can move anywhere
 set virtualedit=block
+" How numbers are recognized in CTRL-A and CTRL-X command
+set nrformats=hex,bin
+" Disable k command
+set keywordprg=
 "--------------------------------------------------------------------
 " Basics_end }}}
 "====================================================================
@@ -376,8 +300,10 @@ set virtualedit=block
 "--------------------------------------------------------------------
 syntax enable
 filetype plugin indent on
+" Set colorscheme
 colorscheme hybrid
-" background color
+" colorscheme iceberg
+" Background color
 set background=dark
 " Show cursor position
 set ruler
@@ -389,14 +315,20 @@ set showcmd
 set lazyredraw
 " highlight the matching parentheses
 set showmatch
+" Tenths of a second to show the matching bracket
+set matchtime=1
 " Number of pixel lines inserted between characters
 set linespace=0
-" Show unprintable charcters hexadecimal
-set display=uhex
+" View the status line always
+set laststatus=2
+" Display the last line as much as possible
+set display=lastline
 " Open window below
 set splitbelow
 " Useing string in list mode
 set colorcolumn=80
+" Skip messages
+set shortmess& shortmess+=aI
 " Display unprintable characters
 set list
 set listchars=tab:»-,trail:-,extends:»,precedes:«,eol:¬
@@ -432,7 +364,9 @@ set wildmenu
 " Display all match pattern, and complete first match
 set wildmode=list:full
 " Adding the dictionary file
-set complete+=k
+set complete& complete+=k
+" Number of items to show in the popup menu for completion
+set pumheight=10
 "--------------------------------------------------------------------
 " Complete_end }}}
 "====================================================================
@@ -440,32 +374,62 @@ set complete+=k
 "====================================================================
 " Search: {{{
 "--------------------------------------------------------------------
-" Search warp around the end of file
+" Searches warp around the end of the file
 set wrapscan
 " Ignore Uppercase and lowercase
 set ignorecase
-" If Start Uppercase, Case-sensitive
+" If search pattern contains Uppercase characters, Case-sensitive
 set smartcase
 " Enable incremental search
 set incsearch
-" Highlight the search charcters
+" Highlight the search characters
 set hlsearch
-" Tern off the highlight search
-nnoremap <silent><C-@>  :<C-u>nohlsearch<CR><ESC>
-" Search the selected charcters
-vnoremap <silent> // y/<C-R>=escape(@", '\\/.*$^~[]')<CR><CR>
-" Replace the selected charcters
-vnoremap /r "xy:%s/\<<C-R>=escape(@x, '\\/.*$^~[]')<CR>\>//gc<Left><Left><Left>
 "--------------------------------------------------------------------
 " Search_end }}}
 "====================================================================
 
 "====================================================================
-" KeyConfig: {{{
+" Terminal: {{{
+"--------------------------------------------------------------------
+set termwinkey=<C-t>
+noremap <silent><Leader>s :terminal<CR>
+"--------------------------------------------------------------------
+" Terminal_end }}}
+"====================================================================
+
+"====================================================================
+" Backup: {{{
+"--------------------------------------------------------------------
+" Not Buckup
+set nobackup
+" Not create swap file
+set noswapfile
+" Disable Backup
+set nowritebackup
+" Disable persistent undo
+set noundofile
+" History number for command and search pattern
+set history=10000
+set viminfo='50,<1000,s100,\"50,!
+" Change the effect of mkview command
+set viewoptions=folds,cursor
+" Save fold settings
+autocmd auvimrc BufWritePost * if expand('%') != '' && &buftype !~ 'nofile'
+            \ | mkview | endif
+autocmd auvimrc BufRead * if expand('%') != '' && &buftype !~ 'nofile'
+            \ | silent loadview | endif
+"--------------------------------------------------------------------
+" Backup_end }}}
+"====================================================================
+
+"====================================================================
+" Keymap: {{{
 "--------------------------------------------------------------------
 " Prevent wrong target
-nnoremap Q  <Nop>
 nnoremap q: <Nop>
+nnoremap q/ <Nop>
+nnoremap q? <Nop>
+nnoremap Q  <Nop>
 nnoremap ZZ <Nop>
 nnoremap ZQ <Nop>
 " help search
@@ -484,7 +448,7 @@ nnoremap * *N
 nnoremap # #N
 nnoremap g* g*N
 nnoremap g# g#N
-" Keymap in insert mode
+" Emacs like keymap in insert mode
 inoremap <C-a> <Home>
 inoremap <C-e> <End>
 inoremap <C-d> <Del>
@@ -492,15 +456,15 @@ inoremap <C-b> <Left>
 inoremap <C-n> <Down>
 inoremap <C-p> <Up>
 inoremap <C-f> <Right>
-" Keymap in command mode
+" Emacs like keymap in command mode
 cnoremap <C-a> <Home>
 cnoremap <C-e> <End>
 cnoremap <C-d> <Del>
 cnoremap <C-b> <Left>
 cnoremap <C-f> <Right>
 " Buffer manipulate
-nnoremap <silent><c-j> :<C-u>bp<CR>
-nnoremap <silent><C-k> :<C-u>bn<CR>
+nnoremap <silent><C-p> :<C-u>bp<CR>
+nnoremap <silent><C-n> :<C-u>bn<CR>
 " Resize window
 nnoremap <silent>+ <c-w>+
 nnoremap <silent>- <c-w>-
@@ -509,86 +473,78 @@ inoremap jj <ESC>
 inoremap <C-@> <ESC>
 " Select to the end in visual mode
 vnoremap v $h
+" Yank till the end of line.
+nnoremap Y y$
 " Save any changes
 noremap <Leader><Leader> :<C-u>up<CR>
-" Edit vimrc/givmrc by Ev/Rv
-command! Ev edit $MYVIMRC
-command! Rv source $MYVIMRC
-command! Eg edit $HOME/.gvimrc
-command! Rg source $HOME/.gvimrc
 " Save by superuser
 cmap w!! w !sudo tee > /dev/null %
+" Tern off the highlight search characters
+nnoremap <silent><C-@>  :<C-u>nohlsearch<CR><ESC>
+" Replace word with yank characters
+nnoremap <silent> cy ce<C-R>0<ESC>:let@/=@1<CR>:noh<CR>
+vnoremap <silent> cy c<C-R>0<ESC>:let@/=@1<CR>:noh<CR>
+nnoremap <silent> ciy ciw<C-R>0<ESC>:let@/=@1<CR>:noh<CR>
+" Search the selected characters
+vnoremap <silent> // y/<C-R>=escape(@", '\\/.*$^~[]')<CR><CR>
+" Replace the selected characters
+vnoremap /r "xy:%s/\<<C-R>=escape(@x, '\\/.*$^~[]')<CR>\>//gc<Left><Left><Left>
 "--------------------------------------------------------------------
 " KeyConfig_end }}}
 "====================================================================
 
 "====================================================================
-" Encoding: {{{
-"--------------------------------------------------------------------
-set encoding=utf-8
-set fileencodings=ucs-bom,utf-8,iso-2022-jp,sjis,cp932,euc-jp,cp20932
-set fileformats=unix,dos,mac
-"--------------------------------------------------------------------
-" Encoding_end }}}
-"====================================================================
-
-"====================================================================
-" Terminal: {{{
-"--------------------------------------------------------------------
-set termwinkey=<A-q>
-noremap <silent><Leader>s :terminal<CR>
-"--------------------------------------------------------------------
-" Terminal_end }}}
-"====================================================================
-
-"====================================================================
 " Utility: {{{
 "--------------------------------------------------------------------
+" Edit vimrc/givmrc by Ev/Rv
+command! Ev edit $MYVIMRC
+command! Rv source $MYVIMRC
+
 " Use clipboard
 if has('unnamedplus')
-    set clipboard& clipboard+=unnamedplus
+    set clipboard& clipboard^=unnamedplus
 else
-    set clipboard& clipboard+=unnamed
+    set clipboard& clipboard^=unnamed
 endif
 
-" Buffer auto command
-augroup BufferAuto
-    autocmd!
-    " Automove to current directory
-    autocmd BufNewFile,BufRead,BufEnter * if isdirectory(expand("%:p:h"))
-                \ | cd %:p:h | endif
-    " When save, remove trailing spaces
-    autocmd BufWritePre * :%s/\s\+$//ge
-augroup END
+" When grep execute, open quickfix
+autocmd auvimrc QuickfixCmdPost grep cwindow
+
+" Automove to current directory
+autocmd auvimrc BufNewFile,BufRead,BufEnter * if isdirectory(expand('%:p:h'))
+            \ | cd %:p:h | endif
+
+" Remove trailing spaces
+function! s:space_trim() abort
+    let s:cursor = getpos(".")
+    if &filetype == "markdown"
+        %s/\s\+\(\s\{2}\)$/\1/ge
+        match Visual /\s\{2}/
+    else
+        %s/\s\+$//ge
+    endif
+    call setpos(".", s:cursor)
+endfunction
+autocmd auvimrc BufWritePre * call s:space_trim()
+
+" MoveToNewTab
+function! s:MoveToNewTab() abort
+    tab split
+    tabprevious
+    if winnr('$') > 1
+        close
+    elseif bufnr('$') > 1
+        buffer #
+    endif
+    tabnext
+endfunction
+nnoremap <silent> <Leader>k :<C-u>call <SID>MoveToNewTab()<CR>
+
+" Close help
+autocmd auvimrc Filetype help nnoremap <buffer> <ESC> <C-w>c
 
 "--------------------------------------------------------------------
 " Utility_end }}}
-"====================================================================
-
-"====================================================================
-" Backup: {{{
-"--------------------------------------------------------------------
-" Not Buckup
-set nobackup
-" Not create swap file
-set noswapfile
-" Disable Backup
-set nowritebackup
-" History number for command and search pattern
-set history=10000
-set viminfo='50,<1000,s100,\"50,!
-" Change the effect of mkview command
-set viewoptions=folds,cursor
-" Save fold settings
-augroup BackupSave
-    autocmd!
-    autocmd BufWritePost * if expand('%') != '' && &buftype !~ 'nofile'
-                \ | mkview | endif
-    autocmd BufRead * if expand('%') != '' && &buftype !~ 'nofile'
-                \ | silent loadview | endif
-augroup END
-"--------------------------------------------------------------------
-" Backup_end }}}
 "====================================================================
 
 "====================================================================
