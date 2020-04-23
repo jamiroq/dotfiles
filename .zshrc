@@ -12,7 +12,7 @@ colors
 setopt prompt_subst
 
 ## PROMPT:左側に表示される通常のプロンプト
-PROMPT="%F{cyan}%m%f:%F{green}%n%f [%~]"$'\n%(!.%F{red}#%f.⌨ ) '
+PROMPT="%F{cyan}%m%f:%F{green}%n%f [%~]"$'\n%(!.%F{red}#%f.🔰 ) '
 
 ## PROMPT2:2桁以上のコマンドを入力する際に表示されるプロンプト
 PROMPT2="%{${fg[green]}%}%_> %{${reset_color}%}"

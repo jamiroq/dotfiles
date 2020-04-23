@@ -1,10 +1,13 @@
-# LANG
+## Do not export when tmux boots
+[[ $TMUX ]] && return
+
+## LANG
 export LANG="en_US.UTF-8"
 
-# EDITOR
+## EDITOR
 export EDITOR=vim
 
-# PAGER
+## PAGER
 export PAGER=less
 export LESS='--NO-INIT --QUIT-IF-ONE-SCREEN --RAW-CONTROL-CHARS --ignore-case -P ?f%f:(stdin). ?lb%lb?L/%L.. [?eEOF:?pb%pb\%..]'
 export LESSCHARSET='utf-8'
@@ -30,7 +33,18 @@ export HISTFILE=$HOME/.zsh_history #履歴の保存先
 export HISTSIZE=100000 #メモリに展開する履歴の数
 export SAVEHIST=100000 #保存する履歴の数
 
-# FZF
+## FZF
 export FZF_DEFAULT_OPTS='--height 60% --reverse --border'
 export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!.git/*"'
 
+## golang
+export GOPATH=$HOME/.go
+export PATH=${GOPATH}:${PATH}
+
+## homebrew
+export HOMEBREW_PREFIX="/home/linuxbrew/.linuxbrew";
+export HOMEBREW_CELLAR="/home/linuxbrew/.linuxbrew/Cellar";
+export HOMEBREW_REPOSITORY="/home/linuxbrew/.linuxbrew/Homebrew";
+export PATH="/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin${PATH+:$PATH}";
+export MANPATH="/home/linuxbrew/.linuxbrew/share/man${MANPATH+:$MANPATH}:";
+export INFOPATH="/home/linuxbrew/.linuxbrew/share/info${INFOPATH+:$INFOPATH}";
