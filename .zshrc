@@ -109,6 +109,52 @@ show_buffer_stack() {
 zle -N show_buffer_stack
 bindkey '^S' show_buffer_stack
 
+# Ensure precmds are run after cd
+fzf-redraw-prompt() {
+  local precmd
+  for precmd in $precmd_functions; do
+    $precmd
+  done
+  zle reset-prompt
+}
+zle -N fzf-redraw-prompt
+
+fzf-cd-widget() {
+  local cmd="command find -L . -mindepth 1 \\( -path '*/\\.*' -o -fstype 'sysfs' -o -fstype 'devfs' -o -fstype 'devtmpfs' -o -fstype 'proc' \\) -prune \
+    -o -type d -print 2> /dev/null | cut -b3-"
+  setopt localoptions pipefail no_aliases 2> /dev/null
+  local dir="$(eval "$cmd" | fzf +m)"
+  if [[ -z "$dir" ]]; then
+    zle redisplay
+    return 0
+  fi
+  cd "$dir"
+  unset dir # ensure this doesn't end up appearing in prompt expansion
+  local ret=$?
+  zle fzf-redraw-prompt
+  return $ret
+}
+zle     -N    fzf-cd-widget
+bindkey '^T' fzf-cd-widget
+
+# CTRL-R - Paste the selected command from history into the command line
+fzf-history-widget() {
+  local selected num
+  setopt localoptions noglobsubst noposixbuiltins pipefail no_aliases 2> /dev/null
+  selected=( $(fc -rl 1 | perl -ne 'print if !$seen{(/^\s*[0-9]+\s+(.*)/, $1)}++' | fzf) )
+  local ret=$?
+  if [ -n "$selected" ]; then
+    num=$selected[1]
+    if [ -n "$num" ]; then
+      zle vi-fetch-history -n $num
+    fi
+  fi
+  zle reset-prompt
+  return $ret
+}
+zle     -N   fzf-history-widget
+bindkey '^R' fzf-history-widget
+
 #-------------------------------------------------------------------------------
 # Keybind_END }}}
 #===============================================================================
@@ -237,9 +283,6 @@ if [[ -t 0 ]]; then
     stty stop undef
     stty start undef
 fi
-
-## fzfコンフィグ設定読み込み
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 #-------------------------------------------------------------------------------
 # Utility_END }}}

@@ -170,7 +170,7 @@ endfunction
 "============================================
 
 " Fazzy fineder
-Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --all --no-bash'}
+Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --bin'}
 Plug 'junegunn/fzf.vim'
 nnoremap <Leader>m :FZFMru<CR>
 nnoremap <Leader>b :Buffers<CR>

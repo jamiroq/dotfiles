@@ -33,13 +33,17 @@ export HISTFILE=$HOME/.zsh_history #履歴の保存先
 export HISTSIZE=100000 #メモリに展開する履歴の数
 export SAVEHIST=100000 #保存する履歴の数
 
+## Eliminate duplicates
+typeset -U path PATH
+
 ## FZF
+export PATH="${PATH:+${PATH}:}${HOME}/.fzf/bin"
 export FZF_DEFAULT_OPTS='--height 60% --reverse --border'
 export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!.git/*"'
 
 ## golang
 export GOPATH=$HOME/.go
-export PATH=${GOPATH}:${PATH}
+export PATH=${GOPATH}${PATH+:$PATH}
 
 ## homebrew
 export HOMEBREW_PREFIX="/home/linuxbrew/.linuxbrew";
