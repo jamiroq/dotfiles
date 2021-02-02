@@ -189,6 +189,12 @@ if executable('rg')
     cnoreabbrev rg Rg
 endif
 
+" easy motion
+Plug 'easymotion/vim-easymotion'
+let g:EasyMotion_do_mapping = 0
+let g:EasyMotion_smartcase = 1
+map s <Plug>(easymotion-s2)
+
 " Simple filer
 Plug 'cocopon/vaffle.vim'
 nnoremap <silent><Leader>e :<C-u>Vaffle<CR>
