@@ -1,8 +1,8 @@
 ROOTPATH := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
 TARGET   := $(wildcard .??*)
-EXCLUDES := .DS_Store .git .gitignore
+EXCLUDES := .DS_Store .git .gitignore .config
 DOTFILES := $(filter-out $(EXCLUDES), $(TARGET))
-CONFIG_DIR := $(notdir $(wildcard config/*))
+CONFIG_DIR := $(wildcard .config/*)
 
 .PHONY: deploy clean list update help
 
@@ -14,7 +14,7 @@ deploy_home: ## Deployment dot files in HOME
 
 deploy_config: ## Deployment setting directory in XDG_CONFIG_HOME
 	@mkdir -p $(HOME)/.config
-	@$(foreach val, $(CONFIG_DIR), ln -sfnv $(abspath config/$(val)) $(HOME)/.config/$(val);)
+	@$(foreach val, $(CONFIG_DIR), ln -sfnv $(abspath $(val)) $(HOME)/$(val);)
 
 clean: ## Remove the dot files
 	@echo 'Remove dot files in your home directory...'
