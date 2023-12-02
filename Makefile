@@ -2,19 +2,29 @@ ROOTPATH := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
 TARGET   := $(wildcard .??*)
 EXCLUDES := .DS_Store .git .gitignore
 DOTFILES := $(filter-out $(EXCLUDES), $(TARGET))
+CONFIG_DIR := $(notdir $(wildcard config/*))
 
-.PHONY: deploy list init update
+.PHONY: deploy clean list update help
 
-deploy: ## Deployment dot files in your home directory
+deploy: deploy_home deploy_config
 	@echo 'Creating symbolic link for dot file'
+
+deploy_home: ## Deployment dot files in HOME
 	@$(foreach val, $(DOTFILES), ln -sfnv $(abspath $(val)) $(HOME)/$(val);)
+
+deploy_config: ## Deployment setting directory in XDG_CONFIG_HOME
+	@mkdir -p $(HOME)/.config
+	@$(foreach val, $(CONFIG_DIR), ln -sfnv $(abspath config/$(val)) $(HOME)/.config/$(val);)
 
 clean: ## Remove the dot files
 	@echo 'Remove dot files in your home directory...'
 	@-$(foreach val, $(DOTFILES), rm -vrf $(HOME)/$(val);)
 
 list: ## Show the dot files
+	@echo '[~/home/]'
 	@$(foreach val, $(DOTFILES), /bin/ls -d $(val);)
+	@echo '[~/home/.config/]'
+	@$(foreach val, $(CONFIG_DIR), echo $(val);)
 
 update: ## Update this repository
 	@echo 'Update dotfiles repository'
