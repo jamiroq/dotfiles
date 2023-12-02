@@ -486,7 +486,7 @@ noremap <Leader><Leader> :<C-u>up<CR>
 " Save by superuser
 cmap w!! w !sudo tee > /dev/null %
 " Tern off the highlight search characters
-nnoremap <silent><C-@>  :<C-u>nohlsearch<CR><ESC>
+nnoremap <silent><C-l>  :<C-u>nohlsearch<CR><ESC>
 " Replace word with yank characters
 nnoremap <silent> cy ce<C-R>0<ESC>:let@/=@1<CR>:noh<CR>
 vnoremap <silent> cy c<C-R>0<ESC>:let@/=@1<CR>:noh<CR>

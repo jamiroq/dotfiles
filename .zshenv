@@ -38,12 +38,12 @@ typeset -U path PATH
 
 ## FZF
 export PATH="${PATH:+${PATH}:}${HOME}/.fzf/bin"
-export FZF_DEFAULT_OPTS='--height 60% --reverse --border'
+export FZF_DEFAULT_OPTS='--height 60% --reverse --border --bind=ctrl-j:accept'
 export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!.git/*"'
 
 ## golang
 export GOPATH=$HOME/.go
-export PATH=${GOPATH}${PATH+:$PATH}
+export PATH=${GOPATH}/bin${PATH+:$PATH}
 
 ## homebrew
 export HOMEBREW_PREFIX="/home/linuxbrew/.linuxbrew";
