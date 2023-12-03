@@ -5,9 +5,9 @@ return {
         local r = require("utils.remaps")
         r.noremap("n", "<Leader>e", "<cmd>Vaffle<CR>")
         local function customize_vaffle_mappings()
-            r.noremap("n", "<Bslash>", "<Plug>(vaffle-open-root)")
-            r.noremap("n", "s", "<Plug>(vaffle-toggle-current)")
-            r.noremap("n", "<ESC>", "<Plug>(vaffle-quit)")
+            r.map("n", "<Bslash>", "<Plug>(vaffle-open-root)", { buffer = true })
+            r.map("n", "s", "<Plug>(vaffle-toggle-current)", { buffer = true })
+            r.map("n", "<ESC>", "<Plug>(vaffle-quit)", { buffer = true })
         end
         vim.api.nvim_create_autocmd({ 'FileType' }, {
             pattern = 'vaffle',

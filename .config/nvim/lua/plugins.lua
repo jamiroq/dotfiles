@@ -1,3 +1,10 @@
+-- TODO
+-- trouble
+-- diffview
+-- null-ls
+-- dial
+-- git-messenger
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
     vim.fn.system({
@@ -31,11 +38,14 @@ lazy.setup({
 		require("plugins.telescope"),
 		require("plugins.treesitter"),
 		require("plugins.vaffle"),
-        {"andymass/vim-matchup"},
+		require("plugins.fakeclip"),
+		require("plugins.which-key"),
+		require("plugins.matchup"),
+        -- {"andymass/vim-matchup"},
         {"cohama/lexima.vim"},
         -- {"windwp/nvim-autopairs"},
         {"vim-jp/vimdoc-ja"},
-        -- {"kana/vim-fakeclip"},
+        {"kana/vim-fakeclip"},
 	},
 	dev = {
 		path = "~/.local/share",
