@@ -25,7 +25,7 @@ lazy.setup({
 		require("plugins.lsp"),
 		require("plugins.cmp"),
 		require("plugins.comment"),
-		require("plugins.easymotion"),
+		require("plugins.hop"),
 		require("plugins.gitsigns"),
 		require("plugins.lualine"),
 		require("plugins.telescope"),
