@@ -12,7 +12,7 @@ colors
 setopt prompt_subst
 
 ## PROMPT:左側に表示される通常のプロンプト
-PROMPT="%F{cyan}%m%f:%F{green}%n%f [%~]"$'\n%(!.%F{red}#%f.🔰 ) '
+PROMPT="%F{cyan}%m%f:%F{green}%n%f [%~]"$'\n%(!.%F{red}#%f.>) '
 
 ## PROMPT2:2桁以上のコマンドを入力する際に表示されるプロンプト
 PROMPT2="%{${fg[green]}%}%_> %{${reset_color}%}"
@@ -284,6 +284,27 @@ if [[ -t 0 ]]; then
     stty start undef
 fi
 
+## ヒストリから失敗したコマンドを削除
+remove_last_history_if_not_needed () {
+  local last_status="$?"
+  local HISTFILE=~/.zsh_history
+  if [[ ${last_status} -ne 0 ]]; then
+    fc -W
+    ed -s ${HISTFILE} <<EOF >/dev/null
+d
+w
+q
+EOF
+    fc -R
+  fi
+}
+add-zsh-hook precmd remove_last_history_if_not_needed
+
+## ヒストリに一部のコマンドを登録しない
+zshaddhistory() {
+    local line="${1%%$'\n'}"
+    [[ ! "$line" =~ "^(cd|lazygit|la|ll|ls|rm|rmdir|vim|nvim)($| )" ]]
+}
 #-------------------------------------------------------------------------------
 # Utility_END }}}
 #===============================================================================
