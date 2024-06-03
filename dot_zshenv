@@ -45,6 +45,9 @@ export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!.git/*"'
 export GOPATH=$HOME/.go
 export PATH=${GOPATH}/bin${PATH+:$PATH}
 
+## localbin
+export PATH=${HOME}/.local/bin${PATH+:$PATH}
+
 ## homebrew
 export HOMEBREW_PREFIX="/home/linuxbrew/.linuxbrew";
 export HOMEBREW_CELLAR="/home/linuxbrew/.linuxbrew/Cellar";

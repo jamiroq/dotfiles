@@ -42,6 +42,7 @@ lazy.setup({
 		require("plugins.which-key"),
 		require("plugins.matchup"),
 		require("plugins.toggleterm"),
+		-- require("plugins.dial"),
         {"cohama/lexima.vim"},
         {"vim-jp/vimdoc-ja"},
         {"kana/vim-fakeclip"},
