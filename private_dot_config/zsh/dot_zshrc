@@ -62,7 +62,7 @@ alias la='ls -lahF'
 alias ll='ls -lhF'
 alias rm='rm -i'
 alias mv='mv -i'
-alias vivi='vim ~/.vimrc'
+alias ch='chezmoi'
 alias gfind='find . -type f -print | xargs grep'
 
 # lvできちんと表示されるようにする
@@ -168,7 +168,7 @@ setopt extended_history
 setopt inc_append_history
 ## 同一ホストで動いているzshで履歴 を共有
 setopt share_history
-## ヒストリを呼び出してから実行する間に一旦編集可能を止める
+## ヒストリを呼び出してから実行する間に一旦止める編集可能
 setopt hist_verify
 ## コマンド行の余分な空白を詰めてヒストリに入れる
 setopt hist_reduce_blanks
@@ -262,6 +262,7 @@ setopt no_multios
 
 ## コアダンプサイズを制限
 limit coredumpsize 102400
+zstyle ':completion:*' cache-path "$XDG_CACHE_HOME"/zsh/zcompcache
 #-------------------------------------------------------------------------------
 # Option_END }}}
 #===============================================================================
@@ -287,7 +288,7 @@ fi
 ## ヒストリから失敗したコマンドを削除
 remove_last_history_if_not_needed () {
   local last_status="$?"
-  local HISTFILE=~/.zsh_history
+  local HISTFILE=${HISTFILE}
   if [[ ${last_status} -ne 0 ]]; then
     fc -W
     ed -s ${HISTFILE} <<EOF >/dev/null

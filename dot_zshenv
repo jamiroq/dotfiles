@@ -1,17 +1,27 @@
 ## Do not export when tmux boots
 [[ $TMUX ]] && return
 
+## XDG
+export ZDOTDIR=${HOME}/.config/zsh
+export XDG_CONFIG_HOME=${HOME}/.config
+export XDG_CACHE_HOME=${HOME}/.cache
+export XDG_DATA_HOME=${HOME}/.local/share
+export XDG_STATE_HOME=${HOME}/.local/state
+## node
+export NODE_REPL_HISTORY="$XDG_DATA_HOME"/node_repl_history
+## docker
+export DOCKER_CONFIG="$XDG_CONFIG_HOME"/docker
+
 ## LANG
 export LANG="en_US.UTF-8"
 
 ## EDITOR
-export EDITOR=vim
+export EDITOR=nvim
 
 ## PAGER
 export PAGER=less
 export LESS='--NO-INIT --QUIT-IF-ONE-SCREEN --RAW-CONTROL-CHARS --ignore-case -P ?f%f:(stdin). ?lb%lb?L/%L.. [?eEOF:?pb%pb\%..]'
 export LESSCHARSET='utf-8'
-
 export LESS_TERMCAP_mb=$'\E[01;33m'
 export LESS_TERMCAP_md=$'\E[01;37m'
 export LESS_TERMCAP_me=$'\E[0m'
@@ -29,24 +39,25 @@ export LS_COLORS='di=36:ln=35:so=32:pi=33:ex=31:bd=46;34:cd=43;34:su=41;30:sg=46
 export WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
 
 ## HISTORY
-export HISTFILE=$HOME/.zsh_history #履歴の保存先
+export HISTFILE=${XDG_STATE_HOME}/zsh/.zsh_history #履歴の保存先
 export HISTSIZE=100000 #メモリに展開する履歴の数
 export SAVEHIST=100000 #保存する履歴の数
 
 ## Eliminate duplicates
 typeset -U path PATH
 
+## local/bin
+export PATH=${HOME}/.local/bin${PATH+:$PATH}
+
 ## FZF
 export PATH="${PATH:+${PATH}:}${HOME}/.fzf/bin"
+export PATH="${PATH:+${PATH}:}${XDG_DATA_HOME}/fzf/bin"
 export FZF_DEFAULT_OPTS='--height 60% --reverse --border --bind=ctrl-j:accept'
 export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!.git/*"'
 
 ## golang
 export GOPATH=$HOME/.go
 export PATH=${GOPATH}/bin${PATH+:$PATH}
-
-## localbin
-export PATH=${HOME}/.local/bin${PATH+:$PATH}
 
 ## homebrew
 export HOMEBREW_PREFIX="/home/linuxbrew/.linuxbrew";

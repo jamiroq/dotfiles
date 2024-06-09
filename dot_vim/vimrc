@@ -417,6 +417,7 @@ set noundofile
 " History number for command and search pattern
 set history=10000
 set viminfo='50,<1000,s100,\"50,!
+set viminfo+=n~/.vim/viminfo
 " Change the effect of mkview command
 set viewoptions=folds,cursor
 " Save fold settings
