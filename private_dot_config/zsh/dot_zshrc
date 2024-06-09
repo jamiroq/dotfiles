@@ -5,32 +5,36 @@
 #===============================================================================
 # プロンプト Prompt_decoration {{{
 #-------------------------------------------------------------------------------
-autoload -Uz colors
-colors
+if ! type starship > /dev/null 2>&1; then
+    autoload -Uz colors
+    colors
 
-## 環境変数をプロンプトに展開
-setopt prompt_subst
+    ## 環境変数をプロンプトに展開
+    setopt prompt_subst
 
-## PROMPT:左側に表示される通常のプロンプト
-PROMPT="%F{cyan}%m%f:%F{green}%n%f [%~]"$'\n%(!.%F{red}#%f.>) '
+    ## PROMPT:左側に表示される通常のプロンプト
+    PROMPT="%F{cyan}%m%f:%F{green}%n%f [%~]"$'\n%(!.%F{red}#%f.>) '
 
-## PROMPT2:2桁以上のコマンドを入力する際に表示されるプロンプト
-PROMPT2="%{${fg[green]}%}%_> %{${reset_color}%}"
+    ## PROMPT2:2桁以上のコマンドを入力する際に表示されるプロンプト
+    PROMPT2="%{${fg[green]}%}%_> %{${reset_color}%}"
 
-## RPROMPT:右側に表示されるプロンプト
-autoload -Uz vcs_info
-zstyle ':vcs_info:git:*' check-for-changes true
-zstyle ':vcs_info:git:*' stagedstr "%F{yellow}(+)%f"
-zstyle ':vcs_info:git:*' unstagedstr "%F{red}(-)%f"
-zstyle ':vcs_info:*' formats '%F{green}%c%u [%b]%f'
-zstyle ':vcs_info:*' actionformats '[%b|%a]'
+    ## RPROMPT:右側に表示されるプロンプト
+    autoload -Uz vcs_info
+    zstyle ':vcs_info:git:*' check-for-changes true
+    zstyle ':vcs_info:git:*' stagedstr "%F{yellow}(+)%f"
+    zstyle ':vcs_info:git:*' unstagedstr "%F{red}(-)%f"
+    zstyle ':vcs_info:*' formats '%F{green}%c%u [%b]%f'
+    zstyle ':vcs_info:*' actionformats '[%b|%a]'
 
-function _update_vcs_info() {
-    LANG=en_US.UTF-8 vcs_info
-    RPROMPT="${vcs_info_msg_0_}"
-}
-autoload -Uz add-zsh-hook
-add-zsh-hook precmd _update_vcs_info
+    function _update_vcs_info() {
+        LANG=en_US.UTF-8 vcs_info
+        RPROMPT="${vcs_info_msg_0_}"
+    }
+    autoload -Uz add-zsh-hook
+    add-zsh-hook precmd _update_vcs_info
+else
+    eval "$(starship init zsh)"
+fi
 
 #-------------------------------------------------------------------------------
 # Prompt_decoration_END }}}
@@ -308,6 +312,27 @@ zshaddhistory() {
 }
 #-------------------------------------------------------------------------------
 # Utility_END }}}
+#===============================================================================
+
+#===============================================================================
+# プラグイン Plugins {{{
+#-------------------------------------------------------------------------------
+## zsh拡張
+GHQ=${HOME}/ghq
+plugins=(
+   github.com/zsh-users/zsh-autosuggestions
+   github.com/zsh-users/zsh-syntax-highlighting
+)
+for i in $plugins; do
+   file="${GHQ}/${i}/$(basename $i).zsh"
+   if [[ ! -f $file ]] then
+       ghq get $i
+   fi
+   source $file
+done
+
+#-------------------------------------------------------------------------------
+# Plugins_END }}}
 #===============================================================================
 
 #===============================================================================

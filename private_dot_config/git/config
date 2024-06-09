@@ -32,5 +32,6 @@
     s4 = show HEAD~4
     s5 = show HEAD~5
 [ghq]
-    root = ~/.ghq
-    root = ~/.go/src
+    root = ~/ghq
+[url "git@github.com:"]
+	insteadOf = https://github.com/
