@@ -36,6 +36,7 @@ return {
 			local ensure_installed = {
 				"clang-format",
 				"gopls",
+				"goimports",
 				"lua-language-server",
 				"stylua",
 				"eslint-lsp",
