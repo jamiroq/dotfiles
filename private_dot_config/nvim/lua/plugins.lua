@@ -2,7 +2,6 @@
 -- trouble
 -- diffview
 -- null-ls
--- dial
 -- git-messenger
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -28,24 +27,32 @@ end
 -- install plugins
 lazy.setup({
 	spec = {
+        -- color
 		require("plugins.catppuccin"),
+        -- input assistance
 		require("plugins.lsp"),
 		require("plugins.cmp"),
 		require("plugins.comment"),
+        {"cohama/lexima.vim"},
+        {"kana/vim-fakeclip"},
+        -- move
 		require("plugins.hop"),
+		require("plugins.matchup"),
+        -- git
 		require("plugins.gitsigns"),
+        -- view
 		require("plugins.lualine"),
+        -- fazzy finder
 		require("plugins.telescope"),
 		require("plugins.treesitter"),
+        -- filer
 		require("plugins.vaffle"),
+		require("plugins.barbar"),
+        -- utils
 		require("plugins.fakeclip"),
-		require("plugins.which-key"),
-		require("plugins.matchup"),
 		require("plugins.toggleterm"),
-		-- require("plugins.dial"),
-        {"cohama/lexima.vim"},
+		require("plugins.dial"),
         {"vim-jp/vimdoc-ja"},
-        {"kana/vim-fakeclip"},
 	},
 	dev = {
 		path = "~/.local/share",
