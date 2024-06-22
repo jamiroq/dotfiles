@@ -1,9 +1,10 @@
 return {
     "cocopon/vaffle.vim",
-    event = "VeryLazy",
+    keys = {
+        { "<Leader>e", ":Vaffle<CR>", mode = "n" },
+    },
     config = function()
         local r = require("utils.remaps")
-        r.noremap("n", "<Leader>e", "<cmd>Vaffle<CR>")
         local function customize_vaffle_mappings()
             r.map("n", "<Bslash>", "<Plug>(vaffle-open-root)", { buffer = true })
             r.map("n", "s", "<Plug>(vaffle-toggle-current)", { buffer = true })

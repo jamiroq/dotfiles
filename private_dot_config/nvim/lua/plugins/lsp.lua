@@ -4,7 +4,7 @@ return {
         "williamboman/mason.nvim",
         "williamboman/mason-lspconfig.nvim",
     },
-	build = ":MasonInstallAll",
+    build = ":MasonInstallAll",
     event = { "BufReadPre", "BufNewFile" },
     config = function()
         require('mason').setup()
@@ -31,28 +31,28 @@ return {
         vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
             vim.lsp.diagnostic.on_publish_diagnostics, { virtual_text = false }
         )
-		vim.api.nvim_create_user_command("MasonInstallAll", function()
-			vim.cmd('MasonUpdate')
-			local ensure_installed = {
-				"clang-format",
-				"gopls",
-				"goimports",
-				"lua-language-server",
-				"stylua",
-				"eslint-lsp",
-				"html-lsp",
-				"css-lsp",
-				"bash-language-server",
-				"shellcheck",
-				"shellharden",
-				"shfmt",
-				"terraform-ls",
-				"tflint",
-				"dockerfile-language-server",
-				"json-lsp",
-				"yaml-language-server",
-			}
-			vim.cmd('MasonInstall ' .. table.concat(ensure_installed, ' '))
-		end, { desc = "install all lsp tools" })
+        vim.api.nvim_create_user_command("MasonInstallAll", function()
+            vim.cmd('MasonUpdate')
+            local ensure_installed = {
+                "clang-format",
+                "gopls",
+                "goimports",
+                "lua-language-server",
+                "stylua",
+                "eslint-lsp",
+                "html-lsp",
+                "css-lsp",
+                "bash-language-server",
+                "shellcheck",
+                "shellharden",
+                "shfmt",
+                "terraform-ls",
+                "tflint",
+                "dockerfile-language-server",
+                "json-lsp",
+                "yaml-language-server",
+            }
+            vim.cmd('MasonInstall ' .. table.concat(ensure_installed, ' '))
+        end, { desc = "install all lsp tools" })
     end
 }

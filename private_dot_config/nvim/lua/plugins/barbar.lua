@@ -10,13 +10,21 @@ return {
         barbar.setup {
             animation = false,
             auto_hide = false,
+            clickable = false,
+            focus_one_close = 'previous',
             tabpages = true,
-            clicable = false,
+            maximum_padding = 0,
             icons = {
+                button = false,
                 filetype = {
                     enabled = true
-                }
-            }
+                },
+                gitsigns = {
+                    added = { enabled = true, icon = '+' },
+                    changed = { enabled = true, icon = '~' },
+                    deleted = { enabled = true, icon = '-' },
+                },
+            },
         }
 
         -- command setting

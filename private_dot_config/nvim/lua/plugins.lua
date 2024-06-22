@@ -20,68 +20,68 @@ vim.opt.rtp:prepend(lazypath)
 -- use a protected call so we don't error out on first use
 local status_ok, lazy = pcall(require, "lazy")
 if not status_ok then
-	print("lazy just installed, please restart neovim")
-	return
+    print("lazy just installed, please restart neovim")
+    return
 end
 
 -- install plugins
 lazy.setup({
-	spec = {
-        -- color
-		require("plugins.catppuccin"),
+    spec = {
+        -- colorscheme
+        require("plugins.catppuccin"),
         -- input assistance
-		require("plugins.lsp"),
-		require("plugins.cmp"),
-		require("plugins.comment"),
-        {"cohama/lexima.vim"},
-        {"kana/vim-fakeclip"},
+        require("plugins.lsp"),
+        require("plugins.cmp"),
+        require("plugins.comment"),
+        require("plugins.autopairs"),
+        require("plugins.autotag"),
         -- move
-		require("plugins.hop"),
-		require("plugins.matchup"),
+        require("plugins.hop"),
+        require("plugins.matchup"),
         -- git
-		require("plugins.gitsigns"),
+        require("plugins.gitsigns"),
         -- view
-		require("plugins.lualine"),
+        require("plugins.lualine"),
+        require("plugins.barbar"),
+        require("plugins.hlchunk"),
         -- fazzy finder
-		require("plugins.telescope"),
-		require("plugins.treesitter"),
+        require("plugins.telescope"),
         -- filer
-		require("plugins.vaffle"),
-		require("plugins.barbar"),
+        require("plugins.vaffle"),
         -- utils
-		require("plugins.fakeclip"),
-		require("plugins.toggleterm"),
-		require("plugins.dial"),
-        {"vim-jp/vimdoc-ja"},
-	},
-	dev = {
-		path = "~/.local/share",
-	},
-	lockfile = vim.fn.stdpath("config") .. "/lua/plugins/lazy-lock.json",
-	ui = {
-		size = { width = 0.8, height = 0.8 },
-		wrap = true,
-		border = "shadow",
+        require("plugins.treesitter"),
+        require("plugins.toggleterm"),
+        require("plugins.dial"),
+        require("plugins.vimdoc"),
+    },
+    dev = {
+        path = "~/.local/share",
+    },
+    lockfile = vim.fn.stdpath("config") .. "/lua/plugins/lazy-lock.json",
+    ui = {
+        size = { width = 0.8, height = 0.8 },
+        wrap = true,
+        border = "shadow",
         icons = {
-          cmd = "⌘",
-          config = "🛠",
-          event = "📅",
-          ft = "📂",
-          init = "⚙",
-          keys = "🗝",
-          plugin = "🔌",
-          runtime = "💻",
-          require = "🌙",
-          source = "📄",
-          start = "🚀",
-          task = "📌",
-          lazy = "💤 ",
+            cmd = "⌘",
+            config = "🛠",
+            event = "📅",
+            ft = "📂",
+            init = "⚙",
+            keys = "🗝",
+            plugin = "🔌",
+            runtime = "💻",
+            require = "🌙",
+            source = "📄",
+            start = "🚀",
+            task = "📌",
+            lazy = "💤 ",
         },
-	},
-	performance = {
-		cache = {
-			enabled = true,
-		},
-		reset_packpath = true,
-	},
+    },
+    performance = {
+        cache = {
+            enabled = true,
+        },
+        reset_packpath = true,
+    },
 })
