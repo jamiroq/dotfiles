@@ -1,5 +1,6 @@
 -- TODO
 -- trouble
+-- surround
 -- diffview
 -- null-ls
 -- git-messenger
@@ -32,6 +33,7 @@ lazy.setup({
         -- input assistance
         require("plugins.lsp"),
         require("plugins.cmp"),
+        require("plugins.lsp_signature"),
         require("plugins.comment"),
         require("plugins.autopairs"),
         require("plugins.autotag"),
@@ -47,7 +49,8 @@ lazy.setup({
         -- fazzy finder
         require("plugins.telescope"),
         -- filer
-        require("plugins.vaffle"),
+        -- require("plugins.vaffle"),
+        require("plugins.oil"),
         -- utils
         require("plugins.treesitter"),
         require("plugins.toggleterm"),
